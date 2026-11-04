@@ -1,7 +1,82 @@
 [
   {
+    "title": "Stage Lights",
+    "image": "assets/images/Singer.jpg",
+    "alt": "singer on stage with colorful lighting"
+  },
+  {
+    "title": "Swingset",
+    "image": "assets/images/Swingset.jpg",
+    "alt": "a woman leaning on a swing"
+  },
+  {
     "title": "Bassist",
     "image": "assets/images/Bassist.jpg",
-    "alt": "Bassist playing live"
+    "alt": "a bassist crouching as he plays"
+  },
+  {
+    "title": "Noir Reflection",
+    "image": "assets/images/Noir_Reflection.jpg",
+    "alt": "a photo of a man adjusting his watch, through a mirror on the ground"
+  },
+  {
+    "title": "Self Reflection",
+    "image": "assets/images/Reflection.jpg",
+    "alt": "a man looking into a reflection of himself"
+  },
+  {
+    "title": "Sunset Sky",
+    "image": "assets/images/Circle.jpg",
+    "alt": "a blue sky with a lot of red and orange clouds"
+  },
+  {
+    "title": "Vintage Guitarist",
+    "image": "assets/images/Vintage_Guitar_Shot.jpg",
+    "alt": "a vintage looking shot of a guitarist"
+  },
+  {
+    "title": "Vibrant Studio",
+    "image": "assets/images/Colors_Shoot.jpg",
+    "alt": "two men posing in front of colorful curtain"
+  },
+  {
+    "title": "Ignite",
+    "image": "assets/images/Burning.jpg",
+    "alt": "a woman igniting a lighter"
+  },
+  {
+    "title": "Stage Silhouette",
+    "image": "assets/images/Silhouette.jpg",
+    "alt": "a silhouette of a guitarist on stage"
+  },
+  {
+    "title": "Miata Duo",
+    "image": "assets/images/Miata_Duo.jpg",
+    "alt": "two people in a Mazda Miata"
+  },
+  {
+    "title": "Noir Portrait",
+    "image": "assets/images/Noir_Couple.jpg",
+    "alt": "a couple looking at eachother"
+  },
+  {
+    "title": "Car Portrait",
+    "image": "assets/images/Car_Lean.jpg",
+    "alt": "a woman leaning on car"
+  },
+  {
+    "title": "Radial Blur",
+    "image": "assets/images/Radial_Blur_Subject.jpg",
+    "alt": "portrait of singer with radial blur effect"
+  },
+  {
+    "title": "Monochrome Live",
+    "image": "assets/images/BWSinger.jpg",
+    "alt": "black and white portrait of singer"
+  },
+  {
+    "title": "Sideview Reflection",
+    "image": "assets/images/Rearview_Mirror.jpg",
+    "alt": "a reflection of the woman through the sideview mirror of a Mazda Miata"
   }
 ]
