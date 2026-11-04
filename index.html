@@ -1,12 +1,149 @@
----
-layout: default
-title: Portfolio
----
-<h1 class="page-title">Portfolio</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio | Jakub Chojnowski</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="logo">JAKUB CHOJNOWSKI</div>
+    
+    <nav id="nav-menu">
+      <a href="/">PORTFOLIO</a>
+      <a href="/about/">ABOUT ME</a>
+      <a href="/contact/">CONTACT</a>
+      <a href="/links/">LINKS</a>
+    </nav>
 
-<div class="gallery">
-  <!-- Pages CMS will dynamically feed your images here based on _data/gallery.yml -->
-  {% for item in site.data.gallery %}
-    <img src="{{ item.image }}" alt="{{ item.alt }}">
-  {% endfor %}
-</div>
+    <div class="header-controls">
+      <div class="theme-toggle" id="theme-toggle" title="Toggle Day/Night Mode">☼</div>
+      <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <h1 class="page-title">Portfolio</h1>
+    
+    <!-- JavaScript will inject the images here from your JSON file -->
+    <div class="gallery" id="portfolio-gallery"></div>
+  </main>
+
+  <footer>
+    <a href="https://instagram.com/yourhandle" class="social-icon">📷</a>
+    <p>© 2026 Jakub Chojnowski</p>
+  </footer>
+
+  <!-- Lightbox Overlay (Placed explicitly at the bottom of the body) -->
+  <div id="lightbox" class="lightbox">
+    <span class="lightbox-close" id="lightbox-close">&times;</span>
+    <button class="lightbox-prev" id="lightbox-prev">&#10094;</button>
+    <img id="lightbox-img" class="lightbox-img" src="" alt="">
+    <button class="lightbox-next" id="lightbox-next">&#10095;</button>
+  </div>
+
+  <script>
+    // --- 1. Global Variables for Lightbox ---
+    let galleryImages = [];
+    let currentImageIndex = 0;
+
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const closeBtn = document.getElementById('lightbox-close');
+    const prevBtn = document.getElementById('lightbox-prev');
+    const nextBtn = document.getElementById('lightbox-next');
+
+    // --- 2. Load Pages CMS JSON Gallery ---
+    fetch('/data/gallery.json')
+      .then(response => response.json())
+      .then(images => {
+        galleryImages = images;
+        const gallery = document.getElementById('portfolio-gallery');
+        
+        images.forEach((item, index) => {
+          const img = document.createElement('img');
+          img.src = item.image;
+          img.alt = item.alt;
+          
+          img.addEventListener('click', () => openLightbox(index));
+          
+          gallery.appendChild(img);
+        });
+      })
+      .catch(error => console.error('Error loading gallery:', error));
+
+    // --- 3. Lightbox Functions ---
+    function openLightbox(index) {
+      currentImageIndex = index;
+      updateLightboxImage();
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden'; // Stop background scrolling
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = ''; // Restore scrolling
+    }
+
+    function updateLightboxImage() {
+      lightboxImg.src = galleryImages[currentImageIndex].image;
+      lightboxImg.alt = galleryImages[currentImageIndex].alt;
+    }
+
+    function showNext() {
+      currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+      updateLightboxImage();
+    }
+
+    function showPrev() {
+      currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+      updateLightboxImage();
+    }
+
+    // --- 4. Lightbox Event Listeners ---
+    closeBtn.addEventListener('click', closeLightbox);
+    nextBtn.addEventListener('click', showNext);
+    prevBtn.addEventListener('click', showPrev);
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('active')) return;
+      if (e.key === 'ArrowRight') showNext();
+      if (e.key === 'ArrowLeft') showPrev();
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    // --- 5. Hamburger Menu Logic ---
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const navMenu = document.getElementById('nav-menu');
+
+    hamburgerBtn.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+    });
+
+    // --- 6. Day/Night Theme Logic ---
+    const themeToggle = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('light-mode');
+      
+      if (body.classList.contains('light-mode')) {
+        themeToggle.textContent = '☾';
+      } else {
+        themeToggle.textContent = '☼';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -5,7 +5,7 @@ content:
   - name: gallery
     label: Portfolio Gallery
     type: file
-    path: _data/gallery.yml
+    path: data/gallery.json
     list: true
     fields:
       - name: title

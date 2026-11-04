@@ -3,6 +3,15 @@
   --text-color: #fff;
   --accent: #E1306C; /* Instagram Pink */
   --nav-hover: rgba(255, 255, 255, 0.6);
+  --header-bg: #000; /* Used for the mobile menu dropdown */
+}
+
+/* Light Mode Overrides */
+body.light-mode {
+  --bg-color: #fff;
+  --text-color: #000;
+  --nav-hover: rgba(0, 0, 0, 0.6);
+  --header-bg: #f9f9f9;
 }
 
 * { 
@@ -18,6 +27,8 @@ body {
   display: flex; 
   flex-direction: column; 
   min-height: 100vh; 
+  /* Smooth transition for theme switching */
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 /* Header & Navigation */
@@ -29,10 +40,20 @@ header {
   text-transform: uppercase; 
   font-size: 0.9rem; 
   letter-spacing: 1px;
+  position: relative;
+  background: var(--bg-color);
+  transition: background-color 0.5s ease;
+  z-index: 100;
+  
+  /* Locks the header height so swapping icons can't stretch or shift it */
+  min-height: 90px;
 }
 
-.logo {
-  font-weight: bold;
+.logo { font-weight: bold; }
+
+header nav {
+  display: flex;
+  align-items: center;
 }
 
 header nav a { 
@@ -40,15 +61,52 @@ header nav a {
   text-decoration: none; 
   margin: 0 1.5rem; 
   font-weight: 600; 
-  transition: color 0.2s ease;
+  transition: color 0.3s ease;
 }
 
-header nav a:hover { 
-  color: var(--nav-hover); 
+header nav a:hover { color: var(--nav-hover); }
+
+/* Theme Toggle & Hamburger Layout */
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
+/* Theme Toggle Button */
 .theme-toggle {
   cursor: pointer;
+  font-size: 1.2rem;
+  user-select: none;
+  transition: transform 0.3s ease;
+  
+  /* Fixed width & height using flex centering prevents text-metric height jumps */
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.theme-toggle:hover { transform: scale(1.2); }
+
+/* Hamburger Button (Hidden on Desktop) */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 5px;
+  padding: 5px;
+}
+
+.hamburger span {
+  width: 24px;
+  height: 2px;
+  background-color: var(--text-color);
+  transition: background-color 0.5s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 /* Main Content */
@@ -67,7 +125,7 @@ h1.page-title {
   letter-spacing: 2px;
 }
 
-/* Dynamic Masonry Gallery (Portfolio) */
+/* Dynamic Masonry Gallery */
 .gallery {
   column-count: 3;
   column-gap: 1.5rem;
@@ -81,11 +139,10 @@ h1.page-title {
   break-inside: avoid;
   border-radius: 2px;
   transition: transform 0.3s ease;
+  cursor: pointer; /* Indicates images are clickable for lightbox */
 }
 
-.gallery img:hover {
-  transform: scale(1.02);
-}
+.gallery img:hover { transform: scale(1.02); }
 
 /* Footer */
 footer { 
@@ -103,12 +160,95 @@ footer .social-icon {
   font-size: 1.5rem;
   color: var(--text-color);
   text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+footer .social-icon:hover { color: var(--accent); }
+
+/* --- Lightbox Gallery --- */
+.lightbox {
+  /* Force flex to keep layout, but hide using opacity and visibility for animation */
+  display: flex !important; 
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: opacity 0.3s ease, visibility 0.3s ease !important;
+  
+  /* Force it to overlay the screen, overriding any previewer wrappers */
+  position: fixed !important;
+  z-index: 9999 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  
+  background-color: rgba(0, 0, 0, 0.95) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+body.light-mode .lightbox {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.lightbox.active {
+  /* Fade in */
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.lightbox-img {
+  max-width: 85vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 10000;
   transition: color 0.2s ease;
 }
 
-footer .social-icon:hover {
+body.light-mode .lightbox-close { color: #000; }
+
+.lightbox-prev, .lightbox-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 3rem;
+  cursor: pointer;
+  padding: 20px;
+  z-index: 10000;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+body.light-mode .lightbox-prev, body.light-mode .lightbox-next { color: #000; }
+
+.lightbox-prev:hover, .lightbox-next:hover, .lightbox-close:hover {
   color: var(--accent);
 }
+
+.lightbox-prev:active, .lightbox-next:active { 
+  transform: translateY(-50%) scale(0.9); 
+}
+
+.lightbox-prev { left: 20px; }
+.lightbox-next { right: 20px; }
 
 /* Mobile Responsiveness */
 @media (max-width: 1024px) {
@@ -118,17 +258,37 @@ footer .social-icon:hover {
 }
 
 @media (max-width: 768px) {
-  header { 
-    flex-direction: column; 
-    gap: 1.5rem; 
-    padding: 1.5rem; 
-  }
+  .hamburger { display: flex; }
+  
+  header { padding: 1.5rem 2rem; }
+  
+  /* Mobile Nav Dropdown */
   header nav { 
-    display: flex; 
-    flex-wrap: wrap; 
-    justify-content: center; 
-    gap: 1rem;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--header-bg);
+    flex-direction: column;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
   }
-  header nav a { margin: 0; }
+  
+  header nav.active {
+    max-height: 300px;
+    padding: 1.5rem 0;
+  }
+
+  header nav a { 
+    margin: 1rem 0; 
+    font-size: 1.1rem;
+  }
+
   .gallery { column-count: 1; }
+  
+  .lightbox-prev, .lightbox-next { padding: 10px; font-size: 2rem; }
+  .lightbox-close { top: 10px; right: 20px; }
 }
