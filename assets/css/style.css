@@ -1,17 +1,8 @@
 :root {
   --bg-color: #000;
   --text-color: #fff;
-  --accent: #E1306C; /* Instagram Pink */
-  --nav-hover: rgba(255, 255, 255, 0.6);
-  --header-bg: #000; /* Used for the mobile menu dropdown */
-}
-
-/* Light Mode Overrides */
-body.light-mode {
-  --bg-color: #fff;
-  --text-color: #000;
-  --nav-hover: rgba(0, 0, 0, 0.6);
-  --header-bg: #f9f9f9;
+  --accent: #E1306C;
+  --border-color: rgba(255, 255, 255, 0.1);
 }
 
 * { 
@@ -27,71 +18,120 @@ body {
   display: flex; 
   flex-direction: column; 
   min-height: 100vh; 
-  /* Smooth transition for theme switching */
-  transition: background-color 0.5s ease, color 0.5s ease;
+  overflow-x: hidden; 
 }
 
-/* Header & Navigation */
+/* --- The Magic Header --- */
 header { 
   display: flex; 
-  justify-content: space-between; 
+  justify-content: flex-end; /* Pushes the hidden nav to the right */
   align-items: center; 
-  padding: 2.5rem 4rem; 
+  padding: 1.5rem 4rem; 
   text-transform: uppercase; 
-  font-size: 0.9rem; 
-  letter-spacing: 1px;
-  position: relative;
-  background: var(--bg-color);
-  transition: background-color 0.5s ease;
-  z-index: 100;
+  font-size: 0.85rem; 
+  letter-spacing: 2px;
   
-  /* Locks the header height so swapping icons can't stretch or shift it */
-  min-height: 90px;
+  /* Starts fully transparent without the glass effect */
+  background: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  border-bottom: 1px solid transparent; 
+  
+  transition: all 0.8s ease;
+  z-index: 1000;
+  position: fixed; 
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px; /* Fixed height helps center the logo perfectly */
 }
 
-.logo { font-weight: bold; }
+/* The Glassmorphism fade-in on click */
+header.visible {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
 
+/* --- The Logo Glide --- */
+.logo { 
+  font-weight: 800; 
+  letter-spacing: 4px;
+  font-size: 1.1rem;
+  
+  /* Centers the logo absolutely */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  
+  /* The smooth glide transition */
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* Moves the logo to the left when the button is clicked */
+header.visible .logo {
+  left: 4rem;
+  transform: translate(0, -50%);
+}
+
+/* --- Nav Links --- */
 header nav {
   display: flex;
   align-items: center;
+  gap: 3rem; 
+  
+  /* Hidden initially */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+header.visible nav {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 header nav a { 
   color: var(--text-color); 
   text-decoration: none; 
-  margin: 0 1.5rem; 
-  font-weight: 600; 
-  transition: color 0.3s ease;
+  font-weight: 500; 
+  position: relative;
+  padding-bottom: 4px;
 }
 
-header nav a:hover { color: var(--nav-hover); }
+header nav a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 1px;
+  background: #fff;
+  transition: width 0.3s ease;
+}
 
-/* Theme Toggle & Hamburger Layout */
+header nav a:hover::after {
+  width: 100%;
+}
+
+/* Mobile Hamburger Container */
 .header-controls {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
 }
 
-/* Theme Toggle Button */
-.theme-toggle {
-  cursor: pointer;
-  font-size: 1.2rem;
-  user-select: none;
-  transition: transform 0.3s ease;
-  
-  /* Fixed width & height using flex centering prevents text-metric height jumps */
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
+header.visible .header-controls {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-.theme-toggle:hover { transform: scale(1.2); }
-
-/* Hamburger Button (Hidden on Desktop) */
 .hamburger {
   display: none;
   background: none;
@@ -106,28 +146,138 @@ header nav a:hover { color: var(--nav-hover); }
   width: 24px;
   height: 2px;
   background-color: var(--text-color);
-  transition: background-color 0.5s ease, transform 0.3s ease, opacity 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* Main Content */
-main { 
-  flex: 1; 
-  padding: 0 4rem 4rem 4rem; 
+/* --- Cinematic Hero Section --- */
+.hero {
+  position: relative;
+  height: 100vh; 
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; 
+  padding: 6rem 4rem; 
+  background-color: #111;
+}
+
+.hero-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+  will-change: transform;
+  animation: cinematicZoom 40s linear infinite alternate;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.9) 100%);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+}
+
+.hero-title, .hero-subtitle {
+  color: #fff !important; 
+}
+
+.hero-title {
+  font-size: clamp(3rem, 7vw, 6rem); 
+  font-weight: 700;
+  letter-spacing: -2px;
+  line-height: 1.1;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  font-weight: 400;
+  margin-bottom: 2.5rem;
+}
+
+/* CTA Buttons */
+.hero-cta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 1rem 2.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: #fff;
+  color: #000;
+  border: 1px solid #fff;
+}
+
+.btn-primary:hover {
+  background: #e0e0e0;
+  border-color: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.4);
+  backdrop-filter: blur(5px);
+}
+
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: #fff;
+  transform: translateY(-2px);
+}
+
+/* Gallery Section */
+.gallery-section {
+  display: none; 
+  padding: 8rem 4rem 4rem 4rem; 
   max-width: 1600px; 
   margin: 0 auto; 
   width: 100%; 
 }
 
-h1.page-title { 
-  text-transform: uppercase; 
-  margin-bottom: 3rem; 
-  font-size: 1.5rem; 
-  letter-spacing: 2px;
+.gallery-section.visible {
+  display: block; 
 }
 
-/* Dynamic Masonry Gallery */
+/* Animations */
+@keyframes cinematicZoom {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.15); }
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(50px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Gallery Grid */
 .gallery {
-  column-count: 3;
+  column-count: 2; 
   column-gap: 1.5rem;
 }
 
@@ -137,158 +287,99 @@ h1.page-title {
   display: block;
   margin-bottom: 1.5rem;
   break-inside: avoid;
-  border-radius: 2px;
-  transition: transform 0.3s ease;
-  cursor: pointer; /* Indicates images are clickable for lightbox */
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0; 
+  animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; 
 }
 
-.gallery img:hover { transform: scale(1.02); }
+.gallery img:hover { 
+  transform: scale(1.01); 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
 
 /* Footer */
 footer { 
-  text-align: center; 
-  padding: 3rem 2rem; 
-  font-size: 0.8rem; 
-  opacity: 0.5; 
+  padding: 4rem 2rem; 
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
-footer .social-icon {
-  font-size: 1.5rem;
-  color: var(--text-color);
-  text-decoration: none;
-  transition: color 0.3s ease;
+footer .social-icon svg {
+  width: 24px;
+  height: 24px;
+  stroke: rgba(255, 255, 255, 0.5); /* Dimmed initially */
+  transition: stroke 0.3s ease, transform 0.3s ease;
 }
 
-footer .social-icon:hover { color: var(--accent); }
+footer .social-icon:hover svg { 
+  stroke: #fff; /* Brightens on hover */
+  transform: translateY(-3px); /* Subtle lift */
+}
+
+footer p {
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+}
 
 /* --- Lightbox Gallery --- */
 .lightbox {
-  /* Force flex to keep layout, but hide using opacity and visibility for animation */
   display: flex !important; 
   opacity: 0 !important;
   visibility: hidden !important;
   transition: opacity 0.3s ease, visibility 0.3s ease !important;
-  
-  /* Force it to overlay the screen, overriding any previewer wrappers */
   position: fixed !important;
   z-index: 9999 !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  
+  top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+  width: 100vw !important; height: 100vh !important;
+  margin: 0 !important; padding: 0 !important;
   background-color: rgba(0, 0, 0, 0.95) !important;
-  align-items: center !important;
-  justify-content: center !important;
+  align-items: center !important; justify-content: center !important;
   backdrop-filter: blur(5px) !important;
 }
 
-body.light-mode .lightbox {
-  background-color: rgba(255, 255, 255, 0.95) !important;
-}
-
-.lightbox.active {
-  /* Fade in */
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
+.lightbox.active { opacity: 1 !important; visibility: visible !important; }
 .lightbox-img {
-  max-width: 85vw;
-  max-height: 85vh;
-  object-fit: contain;
-  border-radius: 4px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
-
 .lightbox-close {
-  position: absolute;
-  top: 20px;
-  right: 40px;
-  color: #fff;
-  font-size: 40px;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 10000;
-  transition: color 0.2s ease;
+  position: absolute; top: 20px; right: 40px; color: #fff; font-size: 40px; font-weight: bold; cursor: pointer; z-index: 10000; transition: color 0.2s ease;
 }
-
-body.light-mode .lightbox-close { color: #000; }
-
 .lightbox-prev, .lightbox-next {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 3rem;
-  cursor: pointer;
-  padding: 20px;
-  z-index: 10000;
-  transition: color 0.2s ease, transform 0.2s ease;
+  position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: #fff; font-size: 3rem; cursor: pointer; padding: 20px; z-index: 10000; transition: color 0.2s ease, transform 0.2s ease;
 }
-
-body.light-mode .lightbox-prev, body.light-mode .lightbox-next { color: #000; }
-
-.lightbox-prev:hover, .lightbox-next:hover, .lightbox-close:hover {
-  color: var(--accent);
-}
-
-.lightbox-prev:active, .lightbox-next:active { 
-  transform: translateY(-50%) scale(0.9); 
-}
-
+.lightbox-prev:hover, .lightbox-next:hover, .lightbox-close:hover { color: var(--accent); }
+.lightbox-prev:active, .lightbox-next:active { transform: translateY(-50%) scale(0.9); }
 .lightbox-prev { left: 20px; }
 .lightbox-next { right: 20px; }
 
 /* Mobile Responsiveness */
 @media (max-width: 1024px) {
-  header { padding: 2rem; }
-  main { padding: 0 2rem 2rem 2rem; }
-  .gallery { column-count: 2; }
+  header { padding: 1.5rem 2rem; }
+  header.visible .logo { left: 2rem; } /* Glides to 2rem on smaller screens */
+  .hero { padding: 4rem 2rem; }
+  .gallery-section { padding: 6rem 2rem 2rem 2rem; }
+  .hero-title { font-size: 3.5rem; }
 }
 
 @media (max-width: 768px) {
   .hamburger { display: flex; }
-  
-  header { padding: 1.5rem 2rem; }
-  
-  /* Mobile Nav Dropdown */
   header nav { 
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background: var(--header-bg);
-    flex-direction: column;
-    padding: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease, padding 0.4s ease;
-    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+    position: absolute; top: 100%; left: 0; width: 100%; background: #000; flex-direction: column; padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease; border-bottom: 1px solid var(--border-color); gap: 0;
   }
-  
-  header nav.active {
-    max-height: 300px;
-    padding: 1.5rem 0;
-  }
-
-  header nav a { 
-    margin: 1rem 0; 
-    font-size: 1.1rem;
-  }
-
+  header nav.active { max-height: 300px; padding: 1.5rem 0; }
+  header nav a { margin: 1rem 0; font-size: 1.1rem; }
+  header nav a::after { display: none; } 
   .gallery { column-count: 1; }
-  
+  .hero { padding: 2rem; }
+  .hero-title { font-size: 2.8rem; }
+  .hero-cta { flex-direction: column; width: 100%; }
+  .btn-primary, .btn-secondary { text-align: center; width: 100%; }
   .lightbox-prev, .lightbox-next { padding: 10px; font-size: 2rem; }
   .lightbox-close { top: 10px; right: 20px; }
 }

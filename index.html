@@ -4,21 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portfolio | Jakub Chojnowski</title>
-  <link rel="stylesheet" href="./assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-  <header>
+  
+  <header id="site-header">
     <div class="logo">JAKUB CHOJNOWSKI</div>
     
     <nav id="nav-menu">
-      <a href="./">PORTFOLIO</a>
-      <a href="./about/">ABOUT ME</a>
-      <a href="./contact/">CONTACT</a>
-      <a href="./links/">LINKS</a>
+      <a href="./">Work</a>
+      <a href="about/">About</a>
+      <a href="links/">Info</a>
+      <a href="contact/">Contact</a>
     </nav>
 
     <div class="header-controls">
-      <div class="theme-toggle" id="theme-toggle" title="Toggle Day/Night Mode">☼</div>
       <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu">
         <span></span>
         <span></span>
@@ -27,19 +27,37 @@
     </div>
   </header>
 
-  <main>
-    <h1 class="page-title">Portfolio</h1>
+  <div class="hero" id="hero-section">
+    <div class="hero-bg" id="hero-bg"></div>
     
-    <!-- JavaScript will inject the images here from your JSON file -->
-    <div class="gallery" id="portfolio-gallery"></div>
-  </main>
+    <div class="hero-content">
+      <h1 class="hero-title">Your New<br>Favorite Photo</h1>
+      <p class="hero-subtitle">We'll get the shot you're going to want to use for everything.</p>
+      
+      <div class="hero-cta">
+        <a href="contact/" class="btn-primary">Book a Shoot</a>
+        <button id="reveal-gallery-btn" class="btn-secondary">View Gallery</button>
+      </div>
+    </div>
+  </div>
+    
+  <div class="gallery-section" id="gallery-section">
+    <main>
+      <div class="gallery" id="portfolio-gallery"></div>
+    </main>
 
-  <footer>
-    <a href="https://instagram.com/jackquoob" class="social-icon">📷</a>
-    <p>© 2026 Jakub Chojnowski</p>
-  </footer>
+    <footer>
+      <a href="https://instagram.com/jackquoob" class="social-icon" target="_blank" aria-label="Instagram">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+        </svg>
+      </a>
+      <p>© 2026 Jakub Chojnowski</p>
+    </footer>
+  </div>
 
-  <!-- Lightbox Overlay (Placed explicitly at the bottom of the body) -->
   <div id="lightbox" class="lightbox">
     <span class="lightbox-close" id="lightbox-close">&times;</span>
     <button class="lightbox-prev" id="lightbox-prev">&#10094;</button>
@@ -48,7 +66,19 @@
   </div>
 
   <script>
-    // --- 1. Global Variables for Lightbox ---
+    // --- 1. Reveal Logic ---
+    const revealBtn = document.getElementById('reveal-gallery-btn');
+    const siteHeader = document.getElementById('site-header');
+    const gallerySection = document.getElementById('gallery-section');
+
+    revealBtn.addEventListener('click', () => {
+      // This class triggers the background fade-in AND the logo glide
+      siteHeader.classList.add('visible');
+      gallerySection.classList.add('visible');
+      gallerySection.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // --- 2. Global Variables for Lightbox ---
     let galleryImages = [];
     let currentImageIndex = 0;
 
@@ -58,36 +88,43 @@
     const prevBtn = document.getElementById('lightbox-prev');
     const nextBtn = document.getElementById('lightbox-next');
 
-    // --- 2. Load Pages CMS JSON Gallery ---
+    // --- 3. Load Gallery ---
     fetch('./data/gallery.json')
       .then(response => response.json())
       .then(images => {
         galleryImages = images;
         const gallery = document.getElementById('portfolio-gallery');
+        const heroBg = document.getElementById('hero-bg'); 
         
-        images.forEach((item, index) => {
+        if (images.length > 0) {
+          heroBg.style.backgroundImage = `url('${images[0].image}')`;
+        }
+
+        images.slice(1).forEach((item, index) => {
           const img = document.createElement('img');
           img.src = item.image;
           img.alt = item.alt;
           
-          img.addEventListener('click', () => openLightbox(index));
+          const delay = Math.min(index * 0.1, 1.5);
+          img.style.animationDelay = `${delay}s`;
           
+          img.addEventListener('click', () => openLightbox(index + 1));
           gallery.appendChild(img);
         });
       })
       .catch(error => console.error('Error loading gallery:', error));
 
-    // --- 3. Lightbox Functions ---
+    // --- 4. Lightbox Functions ---
     function openLightbox(index) {
       currentImageIndex = index;
       updateLightboxImage();
       lightbox.classList.add('active');
-      document.body.style.overflow = 'hidden'; // Stop background scrolling
+      document.body.style.overflow = 'hidden'; 
     }
 
     function closeLightbox() {
       lightbox.classList.remove('active');
-      document.body.style.overflow = ''; // Restore scrolling
+      document.body.style.overflow = ''; 
     }
 
     function updateLightboxImage() {
@@ -105,7 +142,7 @@
       updateLightboxImage();
     }
 
-    // --- 4. Lightbox Event Listeners ---
+    // --- 5. Event Listeners ---
     closeBtn.addEventListener('click', closeLightbox);
     nextBtn.addEventListener('click', showNext);
     prevBtn.addEventListener('click', showPrev);
@@ -123,26 +160,12 @@
       if (e.key === 'Escape') closeLightbox();
     });
 
-    // --- 5. Hamburger Menu Logic ---
+    // --- 6. Hamburger Menu Logic ---
     const hamburgerBtn = document.getElementById('hamburger-btn');
     const navMenu = document.getElementById('nav-menu');
 
     hamburgerBtn.addEventListener('click', () => {
       navMenu.classList.toggle('active');
-    });
-
-    // --- 6. Day/Night Theme Logic ---
-    const themeToggle = document.getElementById('theme-toggle');
-    const body = document.body;
-
-    themeToggle.addEventListener('click', () => {
-      body.classList.toggle('light-mode');
-      
-      if (body.classList.contains('light-mode')) {
-        themeToggle.textContent = '☾';
-      } else {
-        themeToggle.textContent = '☼';
-      }
     });
   </script>
 </body>
