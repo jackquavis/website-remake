@@ -4,8 +4,9 @@ media:
 content:
   - name: gallery
     label: Portfolio Gallery
-    type: data
-    file: _data/gallery.yml
+    type: file
+    path: _data/gallery.yml
+    list: true
     fields:
       - name: title
         label: Title
