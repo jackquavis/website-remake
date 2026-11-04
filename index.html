@@ -1,0 +1,12 @@
+---
+layout: default
+title: Portfolio
+---
+<h1 class="page-title">Portfolio</h1>
+
+<div class="gallery">
+  <!-- Pages CMS will dynamically feed your images here based on _data/gallery.yml -->
+  {% for item in site.data.gallery %}
+    <img src="{{ item.image }}" alt="{{ item.alt }}">
+  {% endfor %}
+</div>

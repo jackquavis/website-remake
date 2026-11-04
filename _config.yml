@@ -1,0 +1,5 @@
+name: Jakub Chojnowski
+description: Portfolio
+theme: minima
+# This ensures Jekyll processes your folders exactly as they are for clean URLs
+permalink: pretty

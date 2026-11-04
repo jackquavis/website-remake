@@ -1,0 +1,18 @@
+media:
+  input: assets/images
+  output: /assets/images
+content:
+  - name: gallery
+    label: Portfolio Gallery
+    type: data
+    file: _data/gallery.yml
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: image
+        label: Image
+        type: image
+      - name: alt
+        label: Alt Text
+        type: string
