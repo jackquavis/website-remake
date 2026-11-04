@@ -1,6 +1,6 @@
 media:
   input: assets/images
-  output: /assets/images
+  output: assets/images
 content:
   - name: gallery
     label: Portfolio Gallery
