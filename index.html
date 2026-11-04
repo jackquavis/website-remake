@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portfolio | Jakub Chojnowski</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <body>
   <header>
     <div class="logo">JAKUB CHOJNOWSKI</div>
     
     <nav id="nav-menu">
-      <a href="/">PORTFOLIO</a>
-      <a href="/about/">ABOUT ME</a>
-      <a href="/contact/">CONTACT</a>
-      <a href="/links/">LINKS</a>
+      <a href="./">PORTFOLIO</a>
+      <a href="./about/">ABOUT ME</a>
+      <a href="./contact/">CONTACT</a>
+      <a href="./links/">LINKS</a>
     </nav>
 
     <div class="header-controls">
@@ -35,7 +35,7 @@
   </main>
 
   <footer>
-    <a href="https://instagram.com/yourhandle" class="social-icon">📷</a>
+    <a href="https://instagram.com/jackquoob" class="social-icon">📷</a>
     <p>© 2026 Jakub Chojnowski</p>
   </footer>
 
@@ -59,7 +59,7 @@
     const nextBtn = document.getElementById('lightbox-next');
 
     // --- 2. Load Pages CMS JSON Gallery ---
-    fetch('/data/gallery.json')
+    fetch('./data/gallery.json')
       .then(response => response.json())
       .then(images => {
         galleryImages = images;
