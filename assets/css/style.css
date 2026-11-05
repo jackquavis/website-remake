@@ -149,7 +149,7 @@ body.inner-page {
 }
 
 .home-header.visible {
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(5, 5, 5, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -323,8 +323,8 @@ body.links-page {
   display: flex !important; opacity: 0 !important; visibility: hidden !important;
   transition: opacity 0.3s ease, visibility 0.3s ease !important; position: fixed !important;
   z-index: 9999 !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
-  background-color: rgba(0, 0, 0, 0.95) !important; align-items: center !important; justify-content: center !important; backdrop-filter: blur(5px) !important;
-  -webkit-backdrop-filter: blur(5px) !important;
+  background-color: rgba(0, 0, 0, 0.95) !important; align-items: center !important; justify-content: center !important; 
+  backdrop-filter: blur(5px) !important; -webkit-backdrop-filter: blur(5px) !important;
 }
 .lightbox.active { opacity: 1 !important; visibility: visible !important; }
 .lightbox-img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -361,23 +361,62 @@ footer p { margin-top: 1.5rem; font-size: 0.75rem; color: #555; letter-spacing: 
 @media (max-width: 768px) {
   .hamburger { display: flex; }
   
-  /* Transparent/Glass Mobile Menu Dropdown */
-  #nav-menu {
-    position: absolute; top: 100%; left: 0; width: 100%;
-    flex-direction: column; align-items: center; padding: 0; gap: 0;
-    background: rgba(0, 0, 0, 0.85); /* Matched transparency */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    max-height: 0; overflow: hidden; opacity: 0; pointer-events: none;
-    transition: all 0.4s ease;
+  /* Ensure the logo and hamburger sit ON TOP of the full-screen menu */
+  .logo, .header-controls { position: relative; z-index: 101; }
+  
+  /* Remove blur and background entirely from the header containers to prevent clipping */
+  .home-header.visible, .inner-header {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-bottom: none !important; 
   }
   
-  #nav-menu.active { max-height: 400px; padding: 2rem 0; opacity: 1; pointer-events: auto; gap: 2rem; }
-  #nav-menu a { font-size: 1.1rem; }
+  /* Handle the header background independently when the menu is CLOSED */
+  .home-header.visible::before, .inner-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(5, 5, 5, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: -1;
+    transition: opacity 0.3s ease;
+  }
+
+  /* HIDE the header background when the menu is open so edges don't touch */
+  .home-header:has(#nav-menu.active)::before, 
+  .inner-header:has(#nav-menu.active)::before {
+    opacity: 0;
+  }
+
+  /* Make the nav-menu a full-screen, single-piece overlay */
+  #nav-menu {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    flex-direction: column; align-items: center; justify-content: center;
+    padding: 0; gap: 2.5rem;
+    
+    background: rgba(5, 5, 5, 0.9); /* Darkened slightly for fullscreen legibility */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: none !important; /* Guarantee no artifact lines */
+    
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transform: translateY(-10px);
+    transition: all 0.4s ease;
+    z-index: 99; /* Keeps it below the logo & hamburger, but above the page */
+  }
   
-  .home-header.visible #nav-menu { opacity: 0; pointer-events: none; }
-  .home-header.visible #nav-menu.active { opacity: 1; pointer-events: auto; }
+  #nav-menu.active { 
+    opacity: 1; visibility: visible; pointer-events: auto; 
+    transform: translateY(0); 
+  }
+  
+  #nav-menu a { font-size: 1.2rem; }
+  
+  /* Override the home-header hiding logic to use our new opacity toggle */
+  .home-header.visible #nav-menu { opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(-10px); }
+  .home-header.visible #nav-menu.active { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); }
 
   .gallery { column-count: 1; }
   .hero { padding: 2rem; }
