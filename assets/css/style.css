@@ -140,8 +140,8 @@ body.inner-page {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  padding: 1.5rem 4rem;
-  height: 80px;
+  padding: 0 4rem; /* Standardized */
+  height: 80px; /* Locked height */
   background: rgba(0, 0, 0, 0);
   border-bottom: 1px solid transparent;
   transition: all 0.8s ease;
@@ -190,7 +190,8 @@ body.inner-page {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 3rem;
+  padding: 0 4rem; /* Standardized to match home */
+  height: 80px; /* Locked height to match home */
   background: rgba(5, 5, 5, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -342,8 +343,10 @@ footer p { margin-top: 1.5rem; font-size: 0.75rem; color: #555; letter-spacing: 
    RESPONSIVE
    ========================================================================== */
 @media (max-width: 1024px) {
-  .home-header { padding: 1.5rem 2rem; }
-  .home-header.visible .logo { left: 2rem; }
+  /* Keep synchronized across headers */
+  .home-header, .inner-header { padding: 0 3rem; }
+  .home-header.visible .logo { left: 3rem; }
+  
   .about-container, .contact-container { gap: 3rem; }
   .about-text h1, .contact-info h1 { font-size: 3rem; }
   .hero { padding: 4rem 2rem; }
@@ -355,10 +358,13 @@ footer p { margin-top: 1.5rem; font-size: 0.75rem; color: #555; letter-spacing: 
   .about-container { text-align: center; }
   .contact-container { text-align: left; }
   .about-image-wrapper { max-width: 500px; margin: 0 auto; }
-  .inner-header { padding: 1.5rem 2rem; }
 }
 
 @media (max-width: 768px) {
+  /* Standardize padding again for mobile */
+  .home-header, .inner-header { padding: 0 2rem; }
+  .home-header.visible .logo { left: 2rem; }
+
   .hamburger { display: flex; }
   
   /* Ensure the logo and hamburger sit ON TOP of the full-screen menu */
