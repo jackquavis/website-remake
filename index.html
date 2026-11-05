@@ -4,12 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portfolio | Jakub Chojnowski</title>
-  <!-- Link to Unified CSS -->
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
   
-  <!-- Added .home-header class -->
   <header id="site-header" class="home-header">
     <a href="./" class="logo">JAKUB CHOJNOWSKI</a>
     
@@ -63,11 +61,11 @@
   </div>
 
   <script>
-    // Reveal Gallery Logic
     const revealBtn = document.getElementById('reveal-gallery-btn');
     const siteHeader = document.getElementById('site-header');
     const gallerySection = document.getElementById('gallery-section');
 
+    // Reveal Gallery Logic
     revealBtn.addEventListener('click', () => {
       siteHeader.classList.add('visible');
       gallerySection.classList.add('visible');
@@ -79,12 +77,13 @@
     const lightbox = document.getElementById('lightbox'), lightboxImg = document.getElementById('lightbox-img');
     const closeBtn = document.getElementById('lightbox-close'), prevBtn = document.getElementById('lightbox-prev'), nextBtn = document.getElementById('lightbox-next');
 
-    // Setup scroll observer for gallery images
-    const observer = new IntersectionObserver((entries, obs) => {
+    // Setup scroll observer for gallery images (Fades in/out continuously)
+    const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('is-visible');
-          obs.unobserve(entry.target); // Stop observing once it has faded in
+        } else {
+          entry.target.classList.remove('is-visible');
         }
       });
     }, { threshold: 0.1 });

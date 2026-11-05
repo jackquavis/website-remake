@@ -67,7 +67,6 @@ body.inner-page {
   cursor: pointer;
 }
 
-/* White bg, black text -> Black bg, white text */
 .btn-primary {
   background-color: #ffffff;
   color: #000000;
@@ -81,7 +80,6 @@ body.inner-page {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
 }
 
-/* Transparent bg, white text -> White bg, black text */
 .btn-outline {
   background-color: transparent;
   color: #ffffff;
@@ -116,7 +114,6 @@ body.inner-page {
   white-space: nowrap;
 }
 
-/* Base Nav Menu */
 #nav-menu {
   display: flex;
   gap: 2.5rem;
@@ -137,7 +134,6 @@ body.inner-page {
   color: #ffffff;
 }
 
-/* 1. Home Header (Magic Fade) */
 .home-header {
   position: fixed;
   top: 0; left: 0; width: 100%;
@@ -155,6 +151,7 @@ body.inner-page {
 .home-header.visible {
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -186,7 +183,6 @@ body.inner-page {
 }
 .home-header #nav-menu a:hover::after { width: 100%; }
 
-/* 2. Inner Pages Header (Sticky Glass) */
 .inner-header {
   position: sticky;
   top: 0;
@@ -197,10 +193,10 @@ body.inner-page {
   padding: 1.5rem 3rem;
   background: rgba(5, 5, 5, 0.7);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Hamburger Button */
 .hamburger {
   display: none;
   flex-direction: column;
@@ -328,6 +324,7 @@ body.links-page {
   transition: opacity 0.3s ease, visibility 0.3s ease !important; position: fixed !important;
   z-index: 9999 !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
   background-color: rgba(0, 0, 0, 0.95) !important; align-items: center !important; justify-content: center !important; backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
 }
 .lightbox.active { opacity: 1 !important; visibility: visible !important; }
 .lightbox-img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -364,11 +361,14 @@ footer p { margin-top: 1.5rem; font-size: 0.75rem; color: #555; letter-spacing: 
 @media (max-width: 768px) {
   .hamburger { display: flex; }
   
-  /* Shared Mobile Menu Dropdown for ALL headers */
+  /* Transparent/Glass Mobile Menu Dropdown */
   #nav-menu {
     position: absolute; top: 100%; left: 0; width: 100%;
     flex-direction: column; align-items: center; padding: 0; gap: 0;
-    background: rgba(10, 10, 12, 0.98); border-bottom: 1px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.85); /* Matched transparency */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     max-height: 0; overflow: hidden; opacity: 0; pointer-events: none;
     transition: all 0.4s ease;
   }
@@ -376,8 +376,7 @@ footer p { margin-top: 1.5rem; font-size: 0.75rem; color: #555; letter-spacing: 
   #nav-menu.active { max-height: 400px; padding: 2rem 0; opacity: 1; pointer-events: auto; gap: 2rem; }
   #nav-menu a { font-size: 1.1rem; }
   
-  /* Overrides for Home Magic Header mobile view */
-  .home-header.visible #nav-menu { opacity: 0; pointer-events: none; } /* Reset default visible */
+  .home-header.visible #nav-menu { opacity: 0; pointer-events: none; }
   .home-header.visible #nav-menu.active { opacity: 1; pointer-events: auto; }
 
   .gallery { column-count: 1; }
