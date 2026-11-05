@@ -1,385 +1,387 @@
+/* ==========================================================================
+   GLOBAL VARIABLES & RESETS
+   ========================================================================== */
 :root {
   --bg-color: #000;
+  --bg-gradient: radial-gradient(circle at top left, #1a1a24 0%, #050505 50%, #000000 100%);
   --text-color: #fff;
   --accent: #E1306C;
   --border-color: rgba(255, 255, 255, 0.1);
+  --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-* { 
-  box-sizing: border-box; 
-  margin: 0; 
-  padding: 0; 
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-body { 
-  background: var(--bg-color); 
-  color: var(--text-color); 
-  display: flex; 
-  flex-direction: column; 
-  min-height: 100vh; 
-  overflow-x: hidden; 
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-main);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* --- The Magic Header --- */
-header { 
-  display: flex; 
-  justify-content: flex-end; /* Pushes the hidden nav to the right */
-  align-items: center; 
-  padding: 1.5rem 4rem; 
-  text-transform: uppercase; 
-  font-size: 0.85rem; 
+body.inner-page {
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+}
+
+/* ==========================================================================
+   TYPOGRAPHY & UTILITIES
+   ========================================================================== */
+.gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, #999999 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes imageReveal {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ==========================================================================
+   BUTTONS
+   ========================================================================== */
+.btn {
+  display: inline-block;
+  padding: 1.25rem 2rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
   letter-spacing: 2px;
-  
-  /* Starts fully transparent without the glass effect */
-  background: rgba(0, 0, 0, 0);
-  backdrop-filter: blur(0px);
-  -webkit-backdrop-filter: blur(0px);
-  border-bottom: 1px solid transparent; 
-  
-  transition: all 0.8s ease;
-  z-index: 1000;
-  position: fixed; 
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 80px; /* Fixed height helps center the logo perfectly */
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-/* The Glassmorphism fade-in on click */
-header.visible {
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+/* White bg, black text -> Black bg, white text */
+.btn-primary {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #ffffff;
 }
 
-/* --- The Logo Glide --- */
-.logo { 
-  font-weight: 800; 
-  letter-spacing: 4px;
-  font-size: 1.1rem;
-  
-  /* Centers the logo absolutely */
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  
-  /* The smooth glide transition */
-  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+.btn-primary:hover:not(:disabled) {
+  background-color: #000000;
+  color: #ffffff;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Transparent bg, white text -> White bg, black text */
+.btn-outline {
+  background-color: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(5px);
+}
+
+.btn-outline:hover {
+  background-color: #ffffff;
+  color: #000000;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+  border-color: #ffffff;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   HEADER & NAVIGATION
+   ========================================================================== */
+.logo {
+  font-weight: 700;
+  letter-spacing: 3px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  text-decoration: none;
   color: #fff;
+  z-index: 101;
   white-space: nowrap;
 }
 
-/* Moves the logo to the left when the button is clicked */
-header.visible .logo {
+/* Base Nav Menu */
+#nav-menu {
+  display: flex;
+  gap: 2.5rem;
+}
+
+#nav-menu a {
+  color: #777;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+#nav-menu a:hover, #nav-menu a.active {
+  color: #ffffff;
+}
+
+/* 1. Home Header (Magic Fade) */
+.home-header {
+  position: fixed;
+  top: 0; left: 0; width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1.5rem 4rem;
+  height: 80px;
+  background: rgba(0, 0, 0, 0);
+  border-bottom: 1px solid transparent;
+  transition: all 0.8s ease;
+  z-index: 1000;
+}
+
+.home-header.visible {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.home-header .logo {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  font-size: 1.1rem;
+  letter-spacing: 4px;
+}
+
+.home-header.visible .logo {
   left: 4rem;
   transform: translate(0, -50%);
 }
 
-/* --- Nav Links --- */
-header nav {
+.home-header #nav-menu, .home-header .header-controls {
+  opacity: 0; pointer-events: none; transition: opacity 0.8s ease;
+}
+
+.home-header.visible #nav-menu, .home-header.visible .header-controls {
+  opacity: 1; pointer-events: auto;
+}
+
+.home-header #nav-menu a::after {
+  content: ''; position: absolute; bottom: -4px; left: 0;
+  width: 0%; height: 1px; background: #fff; transition: width 0.3s ease;
+}
+.home-header #nav-menu a:hover::after { width: 100%; }
+
+/* 2. Inner Pages Header (Sticky Glass) */
+.inner-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 3rem; 
-  
-  /* Hidden initially */
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.8s ease;
+  padding: 1.5rem 3rem;
+  background: rgba(5, 5, 5, 0.7);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-header.visible nav {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-header nav a { 
-  color: var(--text-color); 
-  text-decoration: none; 
-  font-weight: 500; 
-  position: relative;
-  padding-bottom: 4px;
-}
-
-header nav a::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0%;
-  height: 1px;
-  background: #fff;
-  transition: width 0.3s ease;
-}
-
-header nav a:hover::after {
-  width: 100%;
-}
-
-/* Mobile Hamburger Container */
-.header-controls {
-  display: flex;
-  align-items: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.8s ease;
-}
-
-header.visible .header-controls {
-  opacity: 1;
-  pointer-events: auto;
-}
-
+/* Hamburger Button */
 .hamburger {
   display: none;
-  background: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 30px;
+  height: 30px;
+  background: transparent;
   border: none;
   cursor: pointer;
-  flex-direction: column;
-  gap: 5px;
-  padding: 5px;
+  z-index: 101;
 }
 
 .hamburger span {
-  width: 24px;
-  height: 2px;
-  background-color: var(--text-color);
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  display: block; width: 100%; height: 2px;
+  background-color: #ffffff; transition: all 0.3s ease;
 }
 
-/* --- Cinematic Hero Section --- */
+.hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ==========================================================================
+   PAGE: HOME (HERO & GALLERY)
+   ========================================================================== */
 .hero {
-  position: relative;
-  height: 100vh; 
-  width: 100%;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end; 
-  padding: 6rem 4rem; 
-  background-color: #111;
+  position: relative; height: 100vh; width: 100%;
+  overflow: hidden; display: flex; flex-direction: column;
+  justify-content: flex-end; padding: 6rem 4rem; background-color: #111;
 }
-
 .hero-bg {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-size: cover;
-  background-position: center;
-  z-index: 0;
-  will-change: transform;
-  animation: cinematicZoom 40s linear infinite alternate;
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background-size: cover; background-position: center;
+  animation: cinematicZoom 40s linear infinite alternate; z-index: 0;
 }
-
+@keyframes cinematicZoom { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
 .hero::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.9) 100%);
-  z-index: 1;
+  content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.9) 100%); z-index: 1;
 }
+.hero-content { position: relative; z-index: 2; max-width: 800px; }
+.hero-title { font-size: clamp(3rem, 7vw, 6rem); font-weight: 700; letter-spacing: -2px; line-height: 1.1; text-transform: uppercase; margin-bottom: 1.5rem; }
+.hero-subtitle { font-size: 1.2rem; line-height: 1.6; opacity: 0.9; margin-bottom: 2.5rem; }
+.hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
 
-.hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 800px;
-}
-
-.hero-title, .hero-subtitle {
-  color: #fff !important; 
-}
-
-.hero-title {
-  font-size: clamp(3rem, 7vw, 6rem); 
-  font-weight: 700;
-  letter-spacing: -2px;
-  line-height: 1.1;
-  text-transform: uppercase;
-  margin-bottom: 1.5rem;
-}
-
-.hero-subtitle {
-  font-size: 1.2rem;
-  line-height: 1.6;
-  opacity: 0.9;
-  font-weight: 400;
-  margin-bottom: 2.5rem;
-}
-
-/* CTA Buttons */
-.hero-cta {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.btn-primary, .btn-secondary {
-  padding: 1rem 2.5rem;
-  font-size: 0.9rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  text-decoration: none;
-  border-radius: 3px;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.btn-primary {
-  background: #fff;
-  color: #000;
-  border: 1px solid #fff;
-}
-
-.btn-primary:hover {
-  background: #e0e0e0;
-  border-color: #e0e0e0;
-  transform: translateY(-2px);
-}
-
-.btn-secondary {
-  background: transparent;
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.4);
-  backdrop-filter: blur(5px);
-}
-
-.btn-secondary:hover {
-  background: rgba(255,255,255,0.1);
-  border-color: #fff;
-  transform: translateY(-2px);
-}
-
-/* Gallery Section */
-.gallery-section {
-  display: none; 
-  padding: 8rem 4rem 4rem 4rem; 
-  max-width: 1600px; 
-  margin: 0 auto; 
-  width: 100%; 
-}
-
-.gallery-section.visible {
-  display: block; 
-}
-
-/* Animations */
-@keyframes cinematicZoom {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.15); }
-}
-
-@keyframes fadeUp {
-  0% { opacity: 0; transform: translateY(50px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-/* Gallery Grid */
-.gallery {
-  column-count: 2; 
-  column-gap: 1.5rem;
-}
-
+.gallery-section { display: none; padding: 8rem 4rem 4rem 4rem; max-width: 1600px; margin: 0 auto; width: 100%; }
+.gallery-section.visible { display: block; }
+.gallery { column-count: 2; column-gap: 1.5rem; }
 .gallery img {
-  width: 100%;
-  height: auto;
-  display: block;
-  margin-bottom: 1.5rem;
-  break-inside: avoid;
-  border-radius: 4px;
-  cursor: pointer;
-  opacity: 0; 
-  animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  transition: transform 0.3s ease, box-shadow 0.3s ease; 
+  width: 100%; height: auto; display: block; margin-bottom: 1.5rem;
+  border-radius: 4px; cursor: pointer; 
+  opacity: 0; transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease, box-shadow 0.3s ease;
 }
-
-.gallery img:hover { 
-  transform: scale(1.01); 
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+.gallery img.is-visible {
+  opacity: 1; transform: translateY(0);
 }
+.gallery img.is-visible:hover { transform: scale(1.01); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
 
-/* Footer */
-footer { 
-  padding: 4rem 2rem; 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
+/* ==========================================================================
+   PAGE: ABOUT
+   ========================================================================== */
+.about-container {
+  flex: 1; width: 100%; max-width: 1200px; margin: 0 auto;
+  padding: 6rem 3rem; display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center;
 }
-
-footer .social-icon svg {
-  width: 24px;
-  height: 24px;
-  stroke: rgba(255, 255, 255, 0.5); /* Dimmed initially */
-  transition: stroke 0.3s ease, transform 0.3s ease;
+.about-image-wrapper { width: 100%; position: relative; animation: imageReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.about-image-wrapper::after { content: ''; display: block; padding-bottom: 125%; }
+.about-image {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  object-fit: cover; border-radius: 4px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); filter: grayscale(20%) contrast(110%);
 }
+.about-text { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; opacity: 0; }
+.about-text h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.1; letter-spacing: -2px; margin-bottom: 2rem; text-transform: uppercase; }
+.about-text p { font-size: 1.1rem; color: #aaa; line-height: 1.8; margin-bottom: 1.5rem; }
+.about-text p strong { color: #fff; font-weight: 600; }
 
-footer .social-icon:hover svg { 
-  stroke: #fff; /* Brightens on hover */
-  transform: translateY(-3px); /* Subtle lift */
+/* ==========================================================================
+   PAGE: CONTACT
+   ========================================================================== */
+.contact-container {
+  flex: 1; width: 100%; max-width: 1200px; margin: 0 auto;
+  padding: 6rem 3rem; display: grid; grid-template-columns: 1fr 1.2fr; gap: 5rem; align-items: start;
+  animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+.contact-info h1 { font-size: 4rem; font-weight: 800; line-height: 1.05; letter-spacing: -2px; margin-bottom: 1.5rem; text-transform: uppercase; }
+.contact-info p { font-size: 1.15rem; color: #999; line-height: 1.6; margin-bottom: 2rem; max-width: 400px; }
 
-footer p {
-  font-size: 0.75rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.3);
+.contact-form { display: flex; flex-direction: column; gap: 2rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.75rem; }
+.form-group label { font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #888; }
+.form-group input, .form-group textarea {
+  width: 100%; background-color: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff; padding: 1.25rem; font-family: inherit; font-size: 1rem; border-radius: 6px; transition: all 0.3s ease;
 }
+.form-group input:focus, .form-group textarea:focus {
+  outline: none; border-color: #ffffff; background-color: rgba(255, 255, 255, 0.05); box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+}
+.form-group textarea { resize: vertical; min-height: 160px; }
+.status-msg { display: none; padding: 1rem 1.5rem; border-radius: 6px; font-size: 0.95rem; margin-bottom: 2rem; font-weight: 500; }
+.status-msg.success { background-color: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); color: #4ade80; }
+.status-msg.error { background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; }
+.status-msg.active { display: block; animation: fadeUp 0.4s ease-out; }
 
-/* --- Lightbox Gallery --- */
+/* ==========================================================================
+   PAGE: LINKS
+   ========================================================================== */
+body.links-page {
+  background: linear-gradient(-45deg, #0a0f1d, #1c2b59, #231236, #0a1128);
+  background-size: 400% 400%; animation: fluidGradient 12s ease infinite;
+  justify-content: center; align-items: center; padding: 2rem 1.5rem; text-align: center;
+}
+@keyframes fluidGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+.links-page .logo { position: absolute; top: 2.5rem; left: 0; width: 100%; text-align: center; font-size: 1.3rem; letter-spacing: 6px; }
+.links-wrapper { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 2rem; margin-top: 3rem; }
+.links-wrapper h1 { font-size: 3rem; font-weight: 800; line-height: 1.1; letter-spacing: -1px; margin-bottom: 0.5rem; }
+.links-wrapper p { font-size: 1rem; color: #ccc; margin-bottom: 2rem; }
+.links-wrapper .button-group { display: flex; flex-direction: column; gap: 1rem; }
+
+/* ==========================================================================
+   LIGHTBOX & FOOTER
+   ========================================================================== */
 .lightbox {
-  display: flex !important; 
-  opacity: 0 !important;
-  visibility: hidden !important;
-  transition: opacity 0.3s ease, visibility 0.3s ease !important;
-  position: fixed !important;
-  z-index: 9999 !important;
-  top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
-  width: 100vw !important; height: 100vh !important;
-  margin: 0 !important; padding: 0 !important;
-  background-color: rgba(0, 0, 0, 0.95) !important;
-  align-items: center !important; justify-content: center !important;
-  backdrop-filter: blur(5px) !important;
+  display: flex !important; opacity: 0 !important; visibility: hidden !important;
+  transition: opacity 0.3s ease, visibility 0.3s ease !important; position: fixed !important;
+  z-index: 9999 !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+  background-color: rgba(0, 0, 0, 0.95) !important; align-items: center !important; justify-content: center !important; backdrop-filter: blur(5px) !important;
 }
-
 .lightbox.active { opacity: 1 !important; visibility: visible !important; }
-.lightbox-img {
-  max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-.lightbox-close {
-  position: absolute; top: 20px; right: 40px; color: #fff; font-size: 40px; font-weight: bold; cursor: pointer; z-index: 10000; transition: color 0.2s ease;
-}
-.lightbox-prev, .lightbox-next {
-  position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: #fff; font-size: 3rem; cursor: pointer; padding: 20px; z-index: 10000; transition: color 0.2s ease, transform 0.2s ease;
-}
+.lightbox-img { max-width: 85vw; max-height: 85vh; object-fit: contain; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.lightbox-close { position: absolute; top: 20px; right: 40px; color: #fff; font-size: 40px; cursor: pointer; z-index: 10000; }
+.lightbox-prev, .lightbox-next { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: #fff; font-size: 3rem; cursor: pointer; padding: 20px; z-index: 10000; }
 .lightbox-prev:hover, .lightbox-next:hover, .lightbox-close:hover { color: var(--accent); }
-.lightbox-prev:active, .lightbox-next:active { transform: translateY(-50%) scale(0.9); }
-.lightbox-prev { left: 20px; }
-.lightbox-next { right: 20px; }
+.lightbox-prev { left: 20px; } .lightbox-next { right: 20px; }
 
-/* Mobile Responsiveness */
+footer { text-align: center; padding: 3rem 2rem; border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: auto; }
+footer .social-icon svg { width: 24px; height: 24px; color: #888; stroke: currentColor; transition: color 0.3s ease, transform 0.3s ease; }
+footer .social-icon:hover svg { color: #ffffff; transform: translateY(-3px); }
+footer p { margin-top: 1.5rem; font-size: 0.75rem; color: #555; letter-spacing: 1px; text-transform: uppercase; }
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
 @media (max-width: 1024px) {
-  header { padding: 1.5rem 2rem; }
-  header.visible .logo { left: 2rem; } /* Glides to 2rem on smaller screens */
+  .home-header { padding: 1.5rem 2rem; }
+  .home-header.visible .logo { left: 2rem; }
+  .about-container, .contact-container { gap: 3rem; }
+  .about-text h1, .contact-info h1 { font-size: 3rem; }
   .hero { padding: 4rem 2rem; }
   .gallery-section { padding: 6rem 2rem 2rem 2rem; }
-  .hero-title { font-size: 3.5rem; }
+}
+
+@media (max-width: 900px) {
+  .about-container, .contact-container { grid-template-columns: 1fr; padding: 4rem 2rem; }
+  .about-container { text-align: center; }
+  .contact-container { text-align: left; }
+  .about-image-wrapper { max-width: 500px; margin: 0 auto; }
+  .inner-header { padding: 1.5rem 2rem; }
 }
 
 @media (max-width: 768px) {
   .hamburger { display: flex; }
-  header nav { 
-    position: absolute; top: 100%; left: 0; width: 100%; background: #000; flex-direction: column; padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease; border-bottom: 1px solid var(--border-color); gap: 0;
+  
+  /* Shared Mobile Menu Dropdown for ALL headers */
+  #nav-menu {
+    position: absolute; top: 100%; left: 0; width: 100%;
+    flex-direction: column; align-items: center; padding: 0; gap: 0;
+    background: rgba(10, 10, 12, 0.98); border-bottom: 1px solid var(--border-color);
+    max-height: 0; overflow: hidden; opacity: 0; pointer-events: none;
+    transition: all 0.4s ease;
   }
-  header nav.active { max-height: 300px; padding: 1.5rem 0; }
-  header nav a { margin: 1rem 0; font-size: 1.1rem; }
-  header nav a::after { display: none; } 
+  
+  #nav-menu.active { max-height: 400px; padding: 2rem 0; opacity: 1; pointer-events: auto; gap: 2rem; }
+  #nav-menu a { font-size: 1.1rem; }
+  
+  /* Overrides for Home Magic Header mobile view */
+  .home-header.visible #nav-menu { opacity: 0; pointer-events: none; } /* Reset default visible */
+  .home-header.visible #nav-menu.active { opacity: 1; pointer-events: auto; }
+
   .gallery { column-count: 1; }
   .hero { padding: 2rem; }
-  .hero-title { font-size: 2.8rem; }
+  .hero-title, .about-text h1, .contact-info h1 { font-size: 2.5rem; }
   .hero-cta { flex-direction: column; width: 100%; }
-  .btn-primary, .btn-secondary { text-align: center; width: 100%; }
-  .lightbox-prev, .lightbox-next { padding: 10px; font-size: 2rem; }
-  .lightbox-close { top: 10px; right: 20px; }
 }

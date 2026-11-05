@@ -4,396 +4,56 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact | Jakub Chojnowski</title>
-  <style>
-    /* Global Reset & Box Sizing */
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background: radial-gradient(circle at top left, #1a1a24 0%, #050505 50%, #000000 100%);
-      background-attachment: fixed;
-      color: #ffffff;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* Header */
-    #site-header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.5rem 3rem;
-      background: rgba(5, 5, 5, 0.7);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .logo {
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      text-decoration: none;
-      color: #fff;
-      z-index: 101; /* Keeps logo above mobile menu */
-    }
-
-    /* Navigation */
-    #nav-menu {
-      display: flex;
-      gap: 2.5rem;
-    }
-
-    #nav-menu a {
-      color: #777;
-      text-decoration: none;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 2px;
-      transition: color 0.3s ease;
-    }
-
-    #nav-menu a:hover, #nav-menu a.active {
-      color: #ffffff;
-    }
-
-    /* Hamburger Menu Button (Hidden on Desktop) */
-    .mobile-toggle {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      gap: 5px;
-      width: 30px;
-      height: 30px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      z-index: 101; /* Keeps button above mobile menu */
-    }
-
-    .mobile-toggle span {
-      display: block;
-      width: 100%;
-      height: 2px;
-      background-color: #ffffff;
-      transition: all 0.3s ease;
-    }
-
-    /* Hamburger Active State (Turns into an X) */
-    .mobile-toggle.active span:nth-child(1) {
-      transform: translateY(7px) rotate(45deg);
-    }
-    .mobile-toggle.active span:nth-child(2) {
-      opacity: 0;
-    }
-    .mobile-toggle.active span:nth-child(3) {
-      transform: translateY(-7px) rotate(-45deg);
-    }
-
-    /* Fade-in Animation for Content */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Main Contact Container */
-    .contact-container {
-      flex: 1;
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 6rem 3rem;
-      display: grid;
-      grid-template-columns: 1fr 1.2fr;
-      gap: 5rem;
-      align-items: start;
-      animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    .contact-info h1 {
-      font-size: 4rem;
-      font-weight: 800;
-      line-height: 1.05;
-      letter-spacing: -2px;
-      margin-bottom: 1.5rem;
-      text-transform: uppercase;
-      background: linear-gradient(135deg, #ffffff 0%, #999999 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .contact-info p {
-      font-size: 1.15rem;
-      color: #999;
-      line-height: 1.6;
-      margin-bottom: 2rem;
-      max-width: 400px;
-    }
-
-    /* Form Styles */
-    .contact-form {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .form-group label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #888;
-    }
-
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-      background-color: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #ffffff;
-      padding: 1.25rem;
-      font-family: inherit;
-      font-size: 1rem;
-      border-radius: 6px;
-      transition: all 0.3s ease;
-    }
-
-    .form-group input::placeholder,
-    .form-group textarea::placeholder {
-      color: #555;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: #ffffff;
-      background-color: rgba(255, 255, 255, 0.05);
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 160px;
-    }
-
-    .btn-submit {
-      display: inline-block;
-      padding: 1.25rem 2rem;
-      font-size: 0.85rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      background-color: #ffffff;
-      color: #000000;
-      border: 1px solid #ffffff;
-      cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      border-radius: 4px;
-      margin-top: 0.5rem;
-    }
-
-    .btn-submit:hover:not(:disabled) {
-      background-color: #000000;
-      color: #ffffff;
-      transform: translateY(-3px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-    }
-
-    .btn-submit:active:not(:disabled) {
-      transform: translateY(0);
-    }
-
-    .btn-submit:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .status-msg {
-      display: none;
-      padding: 1rem 1.5rem;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      margin-bottom: 2rem;
-      font-weight: 500;
-    }
-
-    .status-msg.success {
-      background-color: rgba(34, 197, 94, 0.1);
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      color: #4ade80;
-    }
-
-    .status-msg.error {
-      background-color: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #f87171;
-    }
-
-    .status-msg.active {
-      display: block;
-      animation: fadeUp 0.4s ease-out;
-    }
-
-    footer {
-      text-align: center;
-      padding: 3rem 2rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      margin-top: auto;
-    }
-
-    .social-icon svg {
-      width: 20px;
-      height: 20px;
-      color: #888;
-      transition: color 0.3s ease, transform 0.3s ease;
-    }
-
-    .social-icon:hover svg {
-      color: #ffffff;
-      transform: translateY(-2px);
-    }
-
-    footer p {
-      margin-top: 1.5rem;
-      font-size: 0.75rem;
-      color: #555;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    /* Tablet Responsiveness */
-    @media (max-width: 900px) {
-      .contact-container {
-        grid-template-columns: 1fr;
-        gap: 3rem;
-        padding: 4rem 2rem;
-      }
-      
-      .contact-info h1 {
-        font-size: 3rem;
-      }
-
-      #site-header {
-        padding: 1.5rem 2rem;
-      }
-    }
-
-    /* Mobile Responsiveness & Hamburger Menu */
-    @media (max-width: 600px) {
-      .mobile-toggle {
-        display: flex; /* Show hamburger button */
-      }
-      
-      #nav-menu {
-        position: absolute;
-        top: 100%; /* Position directly below the header */
-        left: 0;
-        width: 100%;
-        flex-direction: column;
-        align-items: center;
-        padding: 2rem 0;
-        gap: 2rem;
-        background: rgba(10, 10, 12, 0.98);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        
-        /* Hidden by default on mobile */
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-10px);
-        transition: all 0.3s ease;
-      }
-
-      #nav-menu.active {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-      }
-      
-      .contact-info h1 {
-        font-size: 2.5rem;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="../assets/css/style.css"> <!-- Adjust path to style.css as needed -->
 </head>
-<body>
+<body class="inner-page">
 
-  <!-- Header Section -->
-  <header id="site-header">
-    <a href="./" class="logo">JAKUB CHOJNOWSKI</a>
+  <header id="site-header" class="inner-header">
+    <a href="../" class="logo">JAKUB CHOJNOWSKI</a>
     
-    <!-- Hamburger Button -->
-    <button class="mobile-toggle" aria-label="Toggle navigation menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-
     <nav id="nav-menu">
-      <a href="./">Work</a>
-      <a href="about/">About</a>
-      <a href="links/">Info</a>
-      <a href="contact/" class="active">Contact</a>
+      <a href="../">Work</a>
+      <a href="../about/">About</a>
+      <a href="../links/">Info</a>
+      <a href="./" class="active">Contact</a>
     </nav>
+
+    <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
   </header>
 
-  <!-- Contact Form Section -->
   <main class="contact-container">
     <div class="contact-info">
-      <h1>Book a<br>Shoot</h1>
+      <h1 class="gradient-text">Book a<br>Shoot</h1>
       <p>Let's create something incredible together. Fill out the form to discuss your next project, request rates, or just get in touch.</p>
     </div>
 
     <div class="form-wrapper">
-      <div data-fs-success class="status-msg success">
-        Thanks for reaching out! Your message has been sent. I'll get back to you shortly.
-      </div>
-      <div data-fs-error class="status-msg error">
-        Oops! There was a problem submitting your form. Please try again.
-      </div>
+      <div data-fs-success class="status-msg success">Thanks for reaching out! Your message has been sent. I'll get back to you shortly.</div>
+      <div data-fs-error class="status-msg error">Oops! There was a problem submitting your form. Please try again.</div>
 
       <form id="contact-form" class="contact-form">
         <div class="form-group">
           <label for="email">Your Email</label>
           <input type="email" id="email" name="email" data-fs-field required placeholder="hello@example.com" />
         </div>
-
         <div class="form-group">
           <label for="subject">Subject</label>
           <input type="text" id="subject" name="subject" data-fs-field required placeholder="Photoshoot Inquiry" />
         </div>
-
         <div class="form-group">
           <label for="message">Your Message</label>
           <textarea id="message" name="message" rows="6" data-fs-field required placeholder="Tell me about your project..."></textarea>
         </div>
-
-        <button type="submit" data-fs-submit-btn class="btn-submit">
-          Send Message
-        </button>
+        <button type="submit" data-fs-submit-btn class="btn btn-primary">Send Message</button>
       </form>
     </div>
   </main>
 
-  <!-- Footer Section -->
   <footer>
     <a href="https://instagram.com/jackquoob" class="social-icon" target="_blank" aria-label="Instagram">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
         <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
         <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
@@ -402,18 +62,16 @@
     <p>© 2026 Jakub Chojnowski</p>
   </footer>
 
-  <!-- Scripts -->
   <script>
-    // Hamburger Menu Logic
-    const mobileToggle = document.querySelector('.mobile-toggle');
+    // Unified Mobile Menu Toggle
+    const hamburgerBtn = document.getElementById('hamburger-btn');
     const navMenu = document.getElementById('nav-menu');
-
-    mobileToggle.addEventListener('click', () => {
-      mobileToggle.classList.toggle('active');
+    hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('active');
       navMenu.classList.toggle('active');
     });
 
-    // Formspree Submission Logic
+    // Formspree Submission Logic (Kept exactly as yours)
     const form = document.getElementById('contact-form');
     const successMessage = document.querySelector('[data-fs-success]');
     const errorMessage = document.querySelector('[data-fs-error]');
@@ -421,40 +79,19 @@
     
     form.addEventListener('submit', async function(e) {
       e.preventDefault(); 
-      
-      submitBtn.disabled = true;
-      submitBtn.innerText = "SENDING...";
-      
-      successMessage.classList.remove('active');
-      errorMessage.classList.remove('active');
+      submitBtn.disabled = true; submitBtn.innerText = "SENDING...";
+      successMessage.classList.remove('active'); errorMessage.classList.remove('active');
     
-      const formData = new FormData(form);
-      const jsonData = Object.fromEntries(formData.entries());
-    
+      const formData = new FormData(form); const jsonData = Object.fromEntries(formData.entries());
       try {
         const response = await fetch("https://formspree.io/f/xlgzdjrj", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
+          method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" },
           body: JSON.stringify(jsonData)
         });
-    
-        if (response.ok) {
-          successMessage.classList.add('active'); 
-          form.reset(); 
-        } else {
-          errorMessage.classList.add('active'); 
-          console.error("Formspree Error:", await response.text());
-        }
-      } catch (error) {
-        errorMessage.classList.add('active'); 
-        console.error("Network Error:", error);
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerText = "SEND MESSAGE";
-      }
+        if (response.ok) { successMessage.classList.add('active'); form.reset(); } 
+        else { errorMessage.classList.add('active'); console.error("Formspree Error:", await response.text()); }
+      } catch (error) { errorMessage.classList.add('active'); console.error("Network Error:", error); } 
+      finally { submitBtn.disabled = false; submitBtn.innerText = "SEND MESSAGE"; }
     });
   </script>
 </body>

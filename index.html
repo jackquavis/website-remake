@@ -4,15 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portfolio | Jakub Chojnowski</title>
+  <!-- Link to Unified CSS -->
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
   
-  <header id="site-header">
-    <div class="logo">JAKUB CHOJNOWSKI</div>
+  <!-- Added .home-header class -->
+  <header id="site-header" class="home-header">
+    <a href="./" class="logo">JAKUB CHOJNOWSKI</a>
     
     <nav id="nav-menu">
-      <a href="./">Work</a>
+      <a href="./" class="active">Work</a>
       <a href="about/">About</a>
       <a href="links/">Info</a>
       <a href="contact/">Contact</a>
@@ -20,23 +22,19 @@
 
     <div class="header-controls">
       <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </button>
     </div>
   </header>
 
   <div class="hero" id="hero-section">
     <div class="hero-bg" id="hero-bg"></div>
-    
     <div class="hero-content">
       <h1 class="hero-title">Your New<br>Favorite Photo</h1>
       <p class="hero-subtitle">We'll get the shot you're going to want to use for everything.</p>
-      
       <div class="hero-cta">
-        <a href="contact/" class="btn-primary">Book a Shoot</a>
-        <button id="reveal-gallery-btn" class="btn-secondary">View Gallery</button>
+        <a href="contact/" class="btn btn-primary">Book a Shoot</a>
+        <button id="reveal-gallery-btn" class="btn btn-outline">View Gallery</button>
       </div>
     </div>
   </div>
@@ -45,10 +43,9 @@
     <main>
       <div class="gallery" id="portfolio-gallery"></div>
     </main>
-
     <footer>
       <a href="https://instagram.com/jackquoob" class="social-icon" target="_blank" aria-label="Instagram">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
           <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
           <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
@@ -66,105 +63,69 @@
   </div>
 
   <script>
-    // --- 1. Reveal Logic ---
+    // Reveal Gallery Logic
     const revealBtn = document.getElementById('reveal-gallery-btn');
     const siteHeader = document.getElementById('site-header');
     const gallerySection = document.getElementById('gallery-section');
 
     revealBtn.addEventListener('click', () => {
-      // This class triggers the background fade-in AND the logo glide
       siteHeader.classList.add('visible');
       gallerySection.classList.add('visible');
       gallerySection.scrollIntoView({ behavior: 'smooth' });
     });
 
-    // --- 2. Global Variables for Lightbox ---
-    let galleryImages = [];
-    let currentImageIndex = 0;
+    // Gallery & Lightbox Logic
+    let galleryImages = []; let currentImageIndex = 0;
+    const lightbox = document.getElementById('lightbox'), lightboxImg = document.getElementById('lightbox-img');
+    const closeBtn = document.getElementById('lightbox-close'), prevBtn = document.getElementById('lightbox-prev'), nextBtn = document.getElementById('lightbox-next');
 
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const closeBtn = document.getElementById('lightbox-close');
-    const prevBtn = document.getElementById('lightbox-prev');
-    const nextBtn = document.getElementById('lightbox-next');
-
-    // --- 3. Load Gallery ---
-    fetch('./data/gallery.json')
-      .then(response => response.json())
-      .then(images => {
-        galleryImages = images;
-        const gallery = document.getElementById('portfolio-gallery');
-        const heroBg = document.getElementById('hero-bg'); 
-        
-        if (images.length > 0) {
-          heroBg.style.backgroundImage = `url('${images[0].image}')`;
+    // Setup scroll observer for gallery images
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          obs.unobserve(entry.target); // Stop observing once it has faded in
         }
+      });
+    }, { threshold: 0.1 });
 
-        images.slice(1).forEach((item, index) => {
-          const img = document.createElement('img');
-          img.src = item.image;
-          img.alt = item.alt;
-          
-          const delay = Math.min(index * 0.1, 1.5);
-          img.style.animationDelay = `${delay}s`;
-          
-          img.addEventListener('click', () => openLightbox(index + 1));
-          gallery.appendChild(img);
-        });
-      })
-      .catch(error => console.error('Error loading gallery:', error));
+    fetch('./data/gallery.json').then(res => res.json()).then(images => {
+      galleryImages = images; 
+      const gallery = document.getElementById('portfolio-gallery'); 
+      const heroBg = document.getElementById('hero-bg'); 
+      
+      if (images.length > 0) heroBg.style.backgroundImage = `url('${images[0].image}')`;
+      
+      images.slice(1).forEach((item, index) => {
+        const img = document.createElement('img'); 
+        img.src = item.image; 
+        img.alt = item.alt;
+        img.addEventListener('click', () => openLightbox(index + 1));
+        gallery.appendChild(img);
+        
+        // Watch each image for scrolling
+        observer.observe(img);
+      });
+    }).catch(err => console.error('Error loading gallery:', err));
 
-    // --- 4. Lightbox Functions ---
-    function openLightbox(index) {
-      currentImageIndex = index;
-      updateLightboxImage();
-      lightbox.classList.add('active');
-      document.body.style.overflow = 'hidden'; 
-    }
+    function openLightbox(idx) { currentImageIndex = idx; updateLightboxImage(); lightbox.classList.add('active'); document.body.style.overflow = 'hidden'; }
+    function closeLightbox() { lightbox.classList.remove('active'); document.body.style.overflow = ''; }
+    function updateLightboxImage() { lightboxImg.src = galleryImages[currentImageIndex].image; lightboxImg.alt = galleryImages[currentImageIndex].alt; }
+    function showNext() { currentImageIndex = (currentImageIndex + 1) % galleryImages.length; updateLightboxImage(); }
+    function showPrev() { currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length; updateLightboxImage(); }
 
-    function closeLightbox() {
-      lightbox.classList.remove('active');
-      document.body.style.overflow = ''; 
-    }
-
-    function updateLightboxImage() {
-      lightboxImg.src = galleryImages[currentImageIndex].image;
-      lightboxImg.alt = galleryImages[currentImageIndex].alt;
-    }
-
-    function showNext() {
-      currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
-      updateLightboxImage();
-    }
-
-    function showPrev() {
-      currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
-      updateLightboxImage();
-    }
-
-    // --- 5. Event Listeners ---
-    closeBtn.addEventListener('click', closeLightbox);
-    nextBtn.addEventListener('click', showNext);
-    prevBtn.addEventListener('click', showPrev);
-
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox) {
-        closeLightbox();
-      }
-    });
-
-    document.addEventListener('keydown', (e) => {
+    closeBtn.addEventListener('click', closeLightbox); nextBtn.addEventListener('click', showNext); prevBtn.addEventListener('click', showPrev);
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', e => {
       if (!lightbox.classList.contains('active')) return;
-      if (e.key === 'ArrowRight') showNext();
-      if (e.key === 'ArrowLeft') showPrev();
-      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') showNext(); if (e.key === 'ArrowLeft') showPrev(); if (e.key === 'Escape') closeLightbox();
     });
 
-    // --- 6. Hamburger Menu Logic ---
+    // Unified Mobile Menu Toggle
     const hamburgerBtn = document.getElementById('hamburger-btn');
     const navMenu = document.getElementById('nav-menu');
-
     hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('active');
       navMenu.classList.toggle('active');
     });
   </script>
