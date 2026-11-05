@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About | Jakub Chojnowski</title>
+  <style>
+    /* Global Reset & Box Sizing */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at top left, #1a1a24 0%, #050505 50%, #000000 100%);
+      background-attachment: fixed;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    #site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 3rem;
+      background: rgba(5, 5, 5, 0.7);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .logo {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: #fff;
+      z-index: 101;
+    }
+
+    /* Navigation */
+    #nav-menu {
+      display: flex;
+      gap: 2.5rem;
+    }
+
+    #nav-menu a {
+      color: #777;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      transition: color 0.3s ease;
+    }
+
+    #nav-menu a:hover, #nav-menu a.active {
+      color: #ffffff;
+    }
+
+    /* Hamburger Menu Button */
+    .mobile-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 30px;
+      height: 30px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      z-index: 101;
+    }
+
+    .mobile-toggle span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background-color: #ffffff;
+      transition: all 0.3s ease;
+    }
+
+    .mobile-toggle.active span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    .mobile-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .mobile-toggle.active span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes imageReveal {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Main About Container */
+    .about-container {
+      flex: 1;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 6rem 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+
+    /* Image Section */
+    .about-image-wrapper {
+      width: 100%;
+      position: relative;
+      animation: imageReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .about-image-wrapper::after {
+      content: '';
+      display: block;
+      padding-bottom: 125%; /* 4:5 Aspect Ratio */
+    }
+
+    .about-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 4px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      filter: grayscale(20%) contrast(110%);
+    }
+
+    /* Text Section */
+    .about-text {
+      animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+      opacity: 0; /* Starts hidden for animation */
+    }
+
+    .about-text h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -2px;
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #ffffff 0%, #999999 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .about-text p {
+      font-size: 1.1rem;
+      color: #aaa;
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-text p strong {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .btn-outline {
+      display: inline-block;
+      padding: 1rem 2rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      background-color: transparent;
+      color: #ffffff;
+      border: 1px solid #ffffff;
+      text-decoration: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      border-radius: 4px;
+      margin-top: 1.5rem;
+    }
+
+    .btn-outline:hover {
+      background-color: #ffffff;
+      color: #000000;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Footer styles */
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      margin-top: auto;
+    }
+
+    .social-icon svg {
+      width: 20px;
+      height: 20px;
+      color: #888;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .social-icon:hover svg {
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    footer p {
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      color: #555;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* Tablet Responsiveness */
+    @media (max-width: 1024px) {
+      .about-container {
+        gap: 3rem;
+      }
+      .about-text h1 {
+        font-size: 3rem;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .about-container {
+        grid-template-columns: 1fr;
+        padding: 4rem 2rem;
+        text-align: center;
+      }
+      
+      .about-image-wrapper {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      .about-text h1 {
+        font-size: 2.8rem;
+      }
+
+      #site-header {
+        padding: 1.5rem 2rem;
+      }
+    }
+
+    /* Mobile Responsiveness & Hamburger Menu */
+    @media (max-width: 600px) {
+      .mobile-toggle {
+        display: flex; 
+      }
+      
+      #nav-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem 0;
+        gap: 2rem;
+        background: rgba(10, 10, 12, 0.98);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+      }
+
+      #nav-menu.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+      
+      .about-text h1 {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Section -->
+  <header id="site-header">
+    <a href="./" class="logo">JAKUB CHOJNOWSKI</a>
+    
+    <!-- Hamburger Button -->
+    <button class="mobile-toggle" aria-label="Toggle navigation menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav id="nav-menu">
+      <a href="./">Work</a>
+      <a href="about/" class="active">About</a>
+      <a href="links/">Info</a>
+      <a href="contact/">Contact</a>
+    </nav>
+  </header>
+
+  <!-- About Section -->
+  <main class="about-container">
+    
+    <div class="about-image-wrapper">
+      <!-- Replace the src with your actual portrait image -->
+      <img src="/assets/images/About_Me_Photo.jpg" alt="Jakub Chojnowski Portrait" class="about-image">
+    </div>
+
+    <div class="about-text">
+      <h1>Authentic<br>Moments</h1>
+      
+      <p>I am a portrait and editorial photographer dedicated to helping people feel confident and look their absolute best in front of the camera. My goal isn’t just to take a picture, it’s to capture an authentic snapshot in time that you’ll be proud to share.</p>
+      
+      <p>My technical foundation was built through years of studying light, post-processing, and visual storytelling, eventually leading me to shoot editorial work for the Rutgers University Photography Club. It was there I discovered my true focus: people. I want my subjects to feel something real when they look at their images.</p>
+      
+      <p>Whether we're shooting a creative editorial, a professional portrait, or a brand campaign, I believe in making the process effortless so your natural character shines through.</p>
+
+      <a href="contact/" class="btn-outline">Book a Shoot</a>
+    </div>
+
+  </main>
+
+  <!-- Footer Section -->
+  <footer>
+    <a href="https://instagram.com/jackquoob" class="social-icon" target="_blank" aria-label="Instagram">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+      </svg>
+    </a>
+    <p>© 2026 Jakub Chojnowski</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Hamburger Menu Logic
+    const mobileToggle = document.querySelector('.mobile-toggle');
+    const navMenu = document.getElementById('nav-menu');
+
+    mobileToggle.addEventListener('click', () => {
+      mobileToggle.classList.toggle('active');
+      navMenu.classList.toggle('active');
+    });
+  </script>
+</body>
+</html>
