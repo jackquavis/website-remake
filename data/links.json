@@ -1,0 +1,17 @@
+{
+  "name": "JAKUB CHOJNOWSKI",
+  "tagline": "Photography & Visual Storytelling",
+  "palette": {
+    "text": "#ffffff",
+    "card_background": "#0a0a0a",
+    "primary_background": "#ffffff",
+    "primary_text": "#000000",
+    "accent": "#e34343",
+    "tint": "#000000"
+  },
+  "links": [
+    { "label": "Book a Shoot", "subtitle": "Let's make something.", "url": "booking/", "icon": "camera", "primary": true },
+    { "label": "View Portfolio", "subtitle": "The full body of work.", "url": "./", "icon": "grid", "primary": false },
+    { "label": "Instagram", "subtitle": "@jackquoob", "url": "https://instagram.com/jackquoob", "icon": "instagram", "primary": false }
+  ]
+}

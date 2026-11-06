@@ -4,24 +4,98 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Links | Jakub Chojnowski</title>
-  <link rel="stylesheet" href="../assets/css/style.css"> <!-- Adjust path to style.css as needed -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 </head>
-<body class="links-page">
+<body class="links-page" data-root="../" data-page="links">
 
-  <div class="logo">JAKUB CHOJNOWSKI</div>
+  <!-- Photo mosaic (filled from data/gallery.json) -->
+  <div class="links-bg-mosaic" id="links-bg"></div>
+  <div class="links-overlay"></div>
 
-  <div class="links-wrapper">
-    <div>
-      <h1>LET'S<br>CONNECT</h1>
-      <p>Access portfolio, booking, and socials.</p>
-    </div>
+  <div class="vf-corner vf-tl"></div>
+  <div class="vf-corner vf-tr"></div>
+  <div class="vf-corner vf-bl"></div>
+  <div class="vf-corner vf-br"></div>
 
-    <div class="button-group">
-      <a href="../booking/" class="btn btn-primary">Book a Shoot</a>
-      <a href="../" class="btn btn-outline">View Portfolio</a>
-      <a href="https://instagram.com/jackquoob" target="_blank" rel="noopener noreferrer" class="btn btn-outline">Instagram</a>
-    </div>
+  <div class="links-hud links-hud--top">
+    <span class="mono">f/1.8</span><span class="hud-sep">·</span><span class="mono">1/250s</span><span class="hud-sep">·</span><span class="mono">ISO 400</span>
+  </div>
+  <div class="links-hud links-hud--bottom">
+    <span class="mono">35mm</span><span class="hud-sep">·</span><span class="mono">RAW</span><span class="hud-sep">·</span><span class="hud-rec">●</span><span class="mono">LIVE</span>
   </div>
 
+  <div class="links-content">
+    <div class="links-logo-wrap">
+      <div class="links-logo-line"></div>
+      <span class="links-logo-text" id="links-name">JAKUB CHOJNOWSKI</span>
+      <div class="links-logo-line"></div>
+    </div>
+    <div class="links-tagline"><span class="mono" id="links-tagline">Photography &amp; Visual Storytelling</span></div>
+    <div class="links-cards" id="links-cards"></div>
+    <div class="links-footer-text mono">© 2026 Jakub Chojnowski</div>
+  </div>
+
+  <script src="../assets/js/site.js"></script>
+  <script>
+    const ICONS = {
+      camera: '<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
+      grid: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',
+      instagram: '<rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>',
+      mail: '<path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22,6 12,13 2,6"/>',
+      user: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+      link: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>'
+    };
+    const rgb = hex => {
+      const m = /^#?([0-9a-f]{6})$/i.exec(String(hex || '').trim());
+      if (!m) return null;
+      const n = parseInt(m[1], 16);
+      return `${n >> 16 & 255},${n >> 8 & 255},${n & 255}`;
+    };
+
+    Site.getJSON('data/links.json').then(d => {
+      const { esc, url } = Site, s = document.body.style, p = d.palette || {};
+      if (p.text) s.setProperty('--lp-text', p.text);
+      if (rgb(p.card_background)) s.setProperty('--lp-card', rgb(p.card_background));
+      if (p.primary_background) s.setProperty('--lp-primary-bg', p.primary_background);
+      if (p.primary_text) s.setProperty('--lp-primary-text', p.primary_text);
+      if (p.accent) s.setProperty('--lp-accent', p.accent);
+      if (rgb(p.tint)) s.setProperty('--lp-tint', rgb(p.tint));
+      if (d.name) document.getElementById('links-name').textContent = d.name;
+      if (d.tagline) document.getElementById('links-tagline').textContent = d.tagline;
+
+      document.getElementById('links-cards').innerHTML = (d.links || []).map(l => {
+        const ext = /^https?:/.test(l.url || '');
+        return `<a href="${esc(url(l.url))}"${ext ? ' target="_blank" rel="noopener noreferrer"' : ''} class="link-card${l.primary ? ' link-card--primary' : ''}">
+          <div class="link-card-inner">
+            <div class="link-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${ICONS[l.icon] || ICONS.link}</svg></div>
+            <div class="link-card-text"><span class="link-card-label">${esc(l.label)}</span>${l.subtitle ? `<span class="link-card-sub mono">${esc(l.subtitle)}</span>` : ''}</div>
+          </div>
+          ${l.primary ? '<div class="link-card-shutter"><span></span><span></span><span></span><span></span><span></span><span></span></div>' : ''}
+        </a>`;
+      }).join('');
+    }).catch(() => {});
+
+    // Mosaic from the portfolio photos (grows automatically as you add photos)
+    Site.getJSON('data/gallery.json').then(imgs => {
+      const list = (imgs || []).filter(i => i.image).slice(0, 20);
+      const cols = [[], [], [], []];
+      list.forEach((im, i) => cols[i % 4].push(im));
+      const bg = document.getElementById('links-bg');
+      bg.innerHTML = cols.map((c, i) => `<div class="mosaic-col${i % 2 ? ' mosaic-col--offset' : ''}">${c.map(im => `<img src="${Site.esc(Site.url(im.image))}" alt="">`).join('')}</div>`).join('');
+      const els = bg.querySelectorAll('.mosaic-col');
+      let tick = 0;
+      (function drift() {
+        tick += 0.003;
+        els.forEach((col, i) => {
+          const base = col.classList.contains('mosaic-col--offset') ? -60 : 0;
+          col.style.transform = `translateY(${base + Math.sin(tick + i * 0.8) * 14}px)`;
+        });
+        requestAnimationFrame(drift);
+      })();
+    }).catch(() => {});
+  </script>
 </body>
 </html>

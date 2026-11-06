@@ -1,13 +1,44 @@
 media:
   input: assets/images
   output: assets/images
+
 content:
+  # ---------------------------------------------------------------
+  # PUBLISH / HIDE GALLERIES  (toggle "Published" and save)
+  # ---------------------------------------------------------------
+  - name: site
+    label: "Galleries - Publish / Hide"
+    type: file
+    path: data/site.json
+    fields:
+      - name: galleries
+        label: Galleries
+        type: object
+        list: true
+        fields:
+          - name: enabled
+            label: Published (shown on the site and in the menu)
+            type: boolean
+            default: true
+          - name: title
+            label: Title
+            type: string
+          - name: slug
+            label: Folder name (must match the gallery's folder - don't change)
+            type: string
+          - name: description
+            label: Short description
+            type: text
+
+  # ---------------------------------------------------------------
+  # PHOTOS
+  # ---------------------------------------------------------------
   - name: gallery
-    label: Portfolio Gallery
+    label: "Photos - Work (home page)"
     type: file
     path: data/gallery.json
     list: true
-    fields:
+    fields: &photo_fields
       - name: title
         label: Title
         type: string
@@ -17,3 +48,153 @@ content:
       - name: alt
         label: Alt Text
         type: string
+
+  - name: portraits
+    label: "Photos - Portraits"
+    type: file
+    path: data/galleries/portraits.json
+    list: true
+    fields: *photo_fields
+
+  - name: editorial
+    label: "Photos - Editorial"
+    type: file
+    path: data/galleries/editorial.json
+    list: true
+    fields: *photo_fields
+
+  - name: live
+    label: "Photos - Live"
+    type: file
+    path: data/galleries/live.json
+    list: true
+    fields: *photo_fields
+
+  - name: black-and-white
+    label: "Photos - Black & White"
+    type: file
+    path: data/galleries/black-and-white.json
+    list: true
+    fields: *photo_fields
+
+  # ---------------------------------------------------------------
+  # PAGES
+  # ---------------------------------------------------------------
+  - name: about
+    label: "Page - About"
+    type: file
+    path: data/about.json
+    fields:
+      - name: heading
+        label: Heading (new line = line break)
+        type: text
+      - name: photo
+        label: Portrait photo
+        type: image
+      - name: photo_alt
+        label: Photo alt text
+        type: string
+      - name: paragraphs
+        label: Paragraphs
+        type: text
+        list: true
+      - name: process_title
+        label: Process section title
+        type: string
+      - name: process
+        label: Process steps
+        type: object
+        list: true
+        fields:
+          - name: title
+            label: Step title
+            type: string
+          - name: text
+            label: Step description
+            type: text
+      - name: cta_label
+        label: Button text
+        type: string
+
+  - name: booking
+    label: "Page - Booking"
+    type: file
+    path: data/booking.json
+    fields:
+      - name: heading
+        label: Heading (new line = line break)
+        type: text
+      - name: intro
+        label: Intro text
+        type: text
+      - name: shoot_types_title
+        label: Shoot types title
+        type: string
+      - name: shoot_types
+        label: Shoot types
+        type: object
+        list: true
+        fields:
+          - name: name
+            label: Name
+            type: string
+          - name: description
+            label: Description
+            type: string
+
+  - name: links
+    label: "Page - Links (+ colors)"
+    type: file
+    path: data/links.json
+    fields:
+      - name: name
+        label: Name shown at top
+        type: string
+      - name: tagline
+        label: Tagline
+        type: string
+      - name: palette
+        label: Color palette
+        type: object
+        fields:
+          - name: text
+            label: Text color
+            type: color
+          - name: card_background
+            label: Link card background
+            type: color
+          - name: primary_background
+            label: Highlighted link background
+            type: color
+          - name: primary_text
+            label: Highlighted link text
+            type: color
+          - name: accent
+            label: Accent (corners, lines, hover, REC dot)
+            type: color
+          - name: tint
+            label: Background tint over photos
+            type: color
+      - name: links
+        label: Links
+        type: object
+        list: true
+        fields:
+          - name: label
+            label: Label
+            type: string
+          - name: subtitle
+            label: Small text under label
+            type: string
+          - name: url
+            label: URL (full https:// link, or a page like booking/)
+            type: string
+          - name: icon
+            label: Icon
+            type: select
+            options:
+              values: [camera, grid, instagram, mail, user, link]
+          - name: primary
+            label: Highlight this link
+            type: boolean
+            default: false

@@ -6,16 +6,12 @@
   <title>Portfolio | Jakub Chojnowski</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body>
+<body data-root="" data-page="work">
   
   <header id="site-header" class="home-header">
     <a href="./" class="logo">JAKUB CHOJNOWSKI</a>
     
-    <nav id="nav-menu">
-      <a href="./" class="active">Work</a>
-      <a href="about/">About</a>
-      <a href="booking/">Booking</a>
-    </nav>
+    <nav id="nav-menu"></nav>
 
     <div class="header-controls">
       <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu">
@@ -117,15 +113,7 @@
     document.addEventListener('keydown', e => {
       if (!lightbox.classList.contains('active')) return;
       if (e.key === 'ArrowRight') showNext(); if (e.key === 'ArrowLeft') showPrev(); if (e.key === 'Escape') closeLightbox();
-    });
-
-    // Unified Mobile Menu Toggle
-    const hamburgerBtn = document.getElementById('hamburger-btn');
-    const navMenu = document.getElementById('nav-menu');
-    hamburgerBtn.addEventListener('click', () => {
-      hamburgerBtn.classList.toggle('active');
-      navMenu.classList.toggle('active');
-    });
-  </script>
+    });</script>
+  <script src="assets/js/site.js"></script>
 </body>
 </html>

@@ -1,0 +1,11 @@
+{
+  "heading": "Book a\nShoot",
+  "intro": "Let's create something incredible together. Pick the kind of shoot you have in mind, then tell me about your project, request rates, or just get in touch.",
+  "shoot_types_title": "What are you after?",
+  "shoot_types": [
+    { "name": "Portraits", "description": "Individual, couple or group portraits" },
+    { "name": "Editorial", "description": "Concept-driven, creative shoots" },
+    { "name": "Live / Events", "description": "Concerts, bands and performers" },
+    { "name": "Brand & Campaign", "description": "Imagery for your brand or project" }
+  ]
+}
