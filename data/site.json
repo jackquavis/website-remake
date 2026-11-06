@@ -1,25 +1,25 @@
 {
   "galleries": [
     {
-      "enabled": true,
+      "enabled": false,
       "title": "Portraits",
       "slug": "portraits",
       "description": "Natural, confident portraits of people in their element."
     },
     {
-      "enabled": true,
+      "enabled": false,
       "title": "Editorial",
       "slug": "editorial",
       "description": "Concept-driven, story-led images with a point of view."
     },
     {
-      "enabled": true,
+      "enabled": false,
       "title": "Live",
       "slug": "live",
       "description": "Musicians and performers, caught mid-moment under the lights."
     },
     {
-      "enabled": true,
+      "enabled": false,
       "title": "Black & White",
       "slug": "black-and-white",
       "description": "Stripped of color. Light, shape and emotion."
