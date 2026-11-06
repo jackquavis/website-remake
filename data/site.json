@@ -1,7 +1,7 @@
 {
   "galleries": [
     {
-      "enabled": true,
+      "enabled": false,
       "title": "Portraits",
       "slug": "portraits",
       "description": "Natural, confident portraits of people in their element."
