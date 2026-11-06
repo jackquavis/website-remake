@@ -55,32 +55,47 @@
         e.stopPropagation();
         nav.classList.remove('show-galleries');
       });
+      let closeTimer, pinned = false, isHovering = false;
+      const setOpen = (v) => {
+        dd.classList.toggle('open', v);
+        trigger.setAttribute('aria-expanded', v);
+      };
+      // Click: pin the strip open (desktop) until the button is clicked again
       trigger.addEventListener('click', (e) => {
         e.stopPropagation();
         if (isMobile()) { nav.classList.add('show-galleries'); return; }
-        const open = isMobile() ? dd.classList.toggle('open') : (dd.classList.add('open'), true);
-        trigger.setAttribute('aria-expanded', open);
+        pinned = !pinned;
+        dd.classList.toggle('pinned', pinned);
+        if (!pinned) trigger.blur();
+        setOpen(pinned);
       });
-      // Hover intent: stay open briefly after the pointer leaves so it can cross the gap to the strip
-      let closeTimer;
-      dd.addEventListener('mouseenter', () => {
+      // Hover: the button AND the strip both keep it open; a short delay lets the pointer cross gaps
+      const hoverIn = () => {
         clearTimeout(closeTimer);
-        if (!isMobile()) { dd.classList.add('open'); trigger.setAttribute('aria-expanded', 'true'); }
-      });
-      dd.addEventListener('mouseleave', () => {
+        isHovering = true;
+        if (!isMobile()) setOpen(true);
+      };
+      const hoverOut = () => {
         clearTimeout(closeTimer);
-        closeTimer = setTimeout(() => {
-          dd.classList.remove('open');
-          trigger.setAttribute('aria-expanded', 'false');
-        }, 350);
-      });
-      document.addEventListener('click', () => {
-        dd.classList.remove('open');
-        trigger.setAttribute('aria-expanded', 'false');
+        isHovering = false;
+        if (pinned) return;
+        closeTimer = setTimeout(() => { if (!pinned) setOpen(false); }, 350);
+      };
+      dd.addEventListener('mouseenter', hoverIn);
+      dd.addEventListener('mouseleave', hoverOut);
+      const strip = dd.querySelector('.nav-dropdown-menu');
+      strip.addEventListener('mouseenter', hoverIn);
+      strip.addEventListener('mouseleave', hoverOut);
+      // Clicking elsewhere unpins and closes it
+      document.addEventListener('click', (e) => {
+        if (!dd.contains(e.target)) {
+          pinned = false;
+          dd.classList.remove('pinned');
+          setOpen(false);
+        }
       });
     }
   }
-
   function initMobileMenu() {
     const btn = document.getElementById('hamburger-btn');
     const nav = document.getElementById('nav-menu');

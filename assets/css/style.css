@@ -707,9 +707,9 @@ footer p { margin-top: 1.5rem; font-size: 0.75rem; color: #555; letter-spacing: 
   width: 5px; height: 5px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
   transform: rotate(45deg) translateY(-2px); transition: transform 0.25s ease;
 }
-.nav-dropdown:hover .nav-dropdown-trigger, .nav-dropdown.open .nav-dropdown-trigger,
+.nav-dropdown.open .nav-dropdown-trigger, .nav-dropdown.pinned .nav-dropdown-trigger,
 .nav-dropdown.has-active .nav-dropdown-trigger, .nav-dropdown:has(:focus-visible) .nav-dropdown-trigger { color: #fff; }
-.nav-dropdown:hover .caret, .nav-dropdown.open .caret { transform: rotate(225deg) translateY(2px); }
+.nav-dropdown.open .caret, .nav-dropdown.pinned .caret { transform: rotate(225deg) translateY(2px); }
 
 /* The strip: one element, one fade, so background and links always disappear together */
 .nav-dropdown-menu {
@@ -719,14 +719,14 @@ footer p { margin-top: 1.5rem; font-size: 0.75rem; color: #555; letter-spacing: 
   opacity: 0; visibility: hidden; pointer-events: none;
   transition: opacity 0.2s ease, visibility 0s linear 0.2s;
 }
-.nav-dropdown:hover .nav-dropdown-menu, .nav-dropdown.open .nav-dropdown-menu, .nav-dropdown:has(:focus-visible) .nav-dropdown-menu {
+.nav-dropdown.open .nav-dropdown-menu, .nav-dropdown.pinned .nav-dropdown-menu, .nav-dropdown:has(:focus-visible) .nav-dropdown-menu {
   opacity: 1; visibility: visible; pointer-events: auto; transition: opacity 0.2s ease, visibility 0s;
 }
 .nav-dropdown-panel { display: flex; justify-content: flex-end; gap: 2.5rem; padding: 1.5rem 4rem 1.7rem; }
 .nav-dropdown-panel a::after { display: none !important; }
 /* merge the header's bottom border into the strip while it is open */
-.inner-header:has(.nav-dropdown:hover), .inner-header:has(.nav-dropdown.open),
-.home-header:has(.nav-dropdown:hover), .home-header:has(.nav-dropdown.open) { border-bottom-color: transparent; }
+.inner-header:has(.nav-dropdown.open), .inner-header:has(.nav-dropdown.pinned),
+.home-header:has(.nav-dropdown.open), .home-header:has(.nav-dropdown.pinned) { border-bottom-color: transparent; }
 
 /* ==========================================================================
    SHARED: EYEBROWS / FRAME TAGS
@@ -868,8 +868,8 @@ body.links-page {
   .inner-header::before, .home-header::before { height: 100%; bottom: auto; transition: opacity 0.8s ease, height 0.2s ease; }
   .nav-dropdown-menu { background: none; backdrop-filter: none; -webkit-backdrop-filter: none; border: none; }
   .nav-dropdown-panel { height: 64px; padding: 0 4rem; align-items: center; }
-  .inner-header:has(.nav-dropdown:hover)::before, .inner-header:has(.nav-dropdown.open)::before, .inner-header:has(.nav-dropdown-trigger:focus-visible)::before,
-  .home-header:has(.nav-dropdown:hover)::before, .home-header:has(.nav-dropdown.open)::before, .home-header:has(.nav-dropdown-trigger:focus-visible)::before {
+  .inner-header:has(.nav-dropdown.open)::before, .inner-header:has(.nav-dropdown.pinned)::before, .inner-header:has(.nav-dropdown-trigger:focus-visible)::before,
+  .home-header:has(.nav-dropdown.open)::before, .home-header:has(.nav-dropdown.pinned)::before, .home-header:has(.nav-dropdown-trigger:focus-visible)::before {
     height: calc(100% + 64px); border-bottom-color: rgba(255,255,255,0.05);
   }
 }
@@ -899,3 +899,21 @@ body.inner-page::after {
   50% { transform: translate(2%, -3%); } 75% { transform: translate(-2%, -1%); } 100% { transform: translate(0, 0); }
 }
 @media (prefers-reduced-motion: reduce) { body.inner-page::before { animation: none; } }
+
+/* Pinned state: the Galleries button shows it will stay open until clicked again */
+.nav-dropdown-trigger { position: relative; }
+.nav-dropdown-trigger::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 1px; background: #fff;
+  transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease;
+}
+.nav-dropdown.pinned .nav-dropdown-trigger { color: #fff; }
+.nav-dropdown.pinned .nav-dropdown-trigger::after { transform: scaleX(1); }
+.nav-dropdown.pinned .caret { transform: rotate(225deg) translateY(2px); }
+.nav-dropdown.pinned .nav-dropdown-menu { opacity: 1; visibility: visible; pointer-events: auto; }
+@media (min-width: 769px) {
+  .inner-header:has(.nav-dropdown.pinned)::before,
+  .home-header:has(.nav-dropdown.pinned)::before {
+    height: calc(100% + 64px); border-bottom-color: rgba(255,255,255,0.05);
+  }
+}
+@media (max-width: 768px) { .nav-dropdown-trigger::after { display: none; } }
