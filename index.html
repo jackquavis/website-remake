@@ -64,7 +64,6 @@
     function unlockHomeGallery() {
       siteHeader.classList.add('visible');
       gallerySection.classList.add('visible');
-      try { sessionStorage.setItem('homeUnlocked', '1'); } catch (e) {}
     }
 
     revealBtn.addEventListener('click', () => {
@@ -72,33 +71,27 @@
       gallerySection.scrollIntoView({ behavior: 'smooth' });
     });
 
-    // Unlock automatically when arriving from another page on the site (or clicking Home/logo) or scrolling down
+    // Only unlock automatically when arriving directly from another page (not on refresh or fresh visit)
+    const navEntry = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    const isReload = navEntry ? navEntry.type === 'reload' : (performance.navigation && performance.navigation.type === 1);
     const params = new URLSearchParams(window.location.search);
     const hasHomeHash = window.location.hash === '#home' || window.location.hash === '#unlocked';
-    const fromInternal = Boolean(document.referrer && (() => {
-      try { return new URL(document.referrer).origin === window.location.origin; } catch (e) { return true; }
-    })());
-    let wasUnlocked = false;
-    try { wasUnlocked = sessionStorage.getItem('homeUnlocked') === '1'; } catch (e) {}
+    let fromOtherPage = false;
+    try {
+      fromOtherPage = sessionStorage.getItem('homeUnlocked') === '1';
+      sessionStorage.removeItem('homeUnlocked');
+    } catch (e) {}
 
-    if (params.has('unlocked') || hasHomeHash || fromInternal || wasUnlocked) {
-      unlockHomeGallery();
-      if (params.has('unlocked') || hasHomeHash) {
-        history.replaceState(null, '', window.location.pathname);
-        window.scrollTo(0, 0);
-      }
+    if (params.has('unlocked') || hasHomeHash) {
+      history.replaceState(null, '', window.location.pathname);
     }
 
-    // Also unlock immediately if the user scrolls down with mouse wheel, trackpad, touch, or keyboard
-    const unlockOnScrollAttempt = (e) => {
-      if (gallerySection.classList.contains('visible')) return;
-      if (e.type === 'wheel' && e.deltaY <= 0) return;
-      if (e.type === 'keydown' && !['ArrowDown', 'PageDown', ' '].includes(e.key)) return;
+    if (!isReload && (params.has('unlocked') || hasHomeHash || fromOtherPage)) {
       unlockHomeGallery();
-    };
-    window.addEventListener('wheel', unlockOnScrollAttempt, { passive: true });
-    window.addEventListener('touchmove', unlockOnScrollAttempt, { passive: true });
-    window.addEventListener('keydown', unlockOnScrollAttempt);
+      window.scrollTo(0, 0);
+    } else if (isReload) {
+      window.scrollTo(0, 0);
+    }
 
     // Gallery & Lightbox Logic
     let galleryImages = []; let currentImageIndex = 0;
