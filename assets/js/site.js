@@ -30,9 +30,11 @@
   function buildNav(site) {
     const nav = document.getElementById('nav-menu');
     if (!nav) return;
-    // Any non-home page visited during this session unlocks the home gallery for when the user returns
-    if (PAGE && PAGE !== 'home') {
+    // Any inner site page (except Links, which is the external landing page) unlocks the home gallery for when the user returns
+    if (PAGE && PAGE !== 'home' && PAGE !== 'links') {
       try { sessionStorage.setItem('homeUnlocked', '1'); } catch (e) {}
+    } else if (PAGE === 'links') {
+      try { sessionStorage.removeItem('homeUnlocked'); } catch (e) {}
     }
     const galleries = (site.galleries || []).filter((g) => g.enabled);
     const cls = (name) => (PAGE === name ? ' class="active"' : '');
