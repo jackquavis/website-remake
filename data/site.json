@@ -1,4 +1,6 @@
 {
+  "hero_offset_y": 22,
+  "hero_offset_x": 50,
   "galleries": [
     {
       "enabled": true,

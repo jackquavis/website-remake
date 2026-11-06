@@ -114,7 +114,14 @@
       const gallery = document.getElementById('portfolio-gallery'); 
       const heroBg = document.getElementById('hero-bg'); 
       
-      if (images.length > 0) heroBg.style.backgroundImage = `url('${images[0].image}')`;
+      if (images.length > 0) {
+        heroBg.style.backgroundImage = `url('${images[0].image}')`;
+        Promise.resolve(window.Site ? Site.ready : null).then(site => {
+          const y = images[0].offset_y != null ? images[0].offset_y : (site && site.hero_offset_y != null ? site.hero_offset_y : 22);
+          const x = images[0].offset_x != null ? images[0].offset_x : (site && site.hero_offset_x != null ? site.hero_offset_x : 50);
+          heroBg.style.backgroundPosition = `${x}% ${y}%`;
+        });
+      }
       
       images.slice(1).forEach((item, index) => {
         const img = document.createElement('img'); 

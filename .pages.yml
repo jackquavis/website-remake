@@ -4,13 +4,29 @@ media:
 
 content:
   # ---------------------------------------------------------------
-  # PUBLISH / HIDE GALLERIES  (toggle "Published" and save)
+  # SITE & HERO SETTINGS + PUBLISH / HIDE GALLERIES
   # ---------------------------------------------------------------
   - name: site
-    label: "Galleries - Publish / Hide"
+    label: "Site & Hero Settings (Galleries Publish/Hide)"
     type: file
     path: data/site.json
     fields:
+      - name: hero_offset_y
+        label: "Hero Image Vertical Offset % (0 = top / show head, 50 = center, 100 = bottom)"
+        type: number
+        default: 22
+        options:
+          min: 0
+          max: 100
+          step: 1
+      - name: hero_offset_x
+        label: "Hero Image Horizontal Offset % (0 = left, 50 = center, 100 = right)"
+        type: number
+        default: 50
+        options:
+          min: 0
+          max: 100
+          step: 1
       - name: galleries
         label: Galleries
         type: object
@@ -34,11 +50,35 @@ content:
   # PHOTOS
   # ---------------------------------------------------------------
   - name: gallery
-    label: "Photos - Work (home page)"
+    label: "Photos - Home"
     type: file
     path: data/gallery.json
     list: true
-    fields: &photo_fields
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: image
+        label: Image
+        type: image
+      - name: alt
+        label: Alt Text
+        type: string
+      - name: offset_y
+        label: "Hero Vertical Offset % (for first photo: 0 = top / show head, 50 = center, 100 = bottom)"
+        type: number
+        default: 22
+        options:
+          min: 0
+          max: 100
+          step: 1
+
+  - name: portraits
+    label: "Photos - Portraits"
+    type: file
+    path: data/galleries/portraits.json
+    list: true
+    fields:
       - name: title
         label: Title
         type: string
@@ -49,33 +89,53 @@ content:
         label: Alt Text
         type: string
 
-  - name: portraits
-    label: "Photos - Portraits"
-    type: file
-    path: data/galleries/portraits.json
-    list: true
-    fields: *photo_fields
-
   - name: editorial
     label: "Photos - Editorial"
     type: file
     path: data/galleries/editorial.json
     list: true
-    fields: *photo_fields
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: image
+        label: Image
+        type: image
+      - name: alt
+        label: Alt Text
+        type: string
 
   - name: live
     label: "Photos - Live"
     type: file
     path: data/galleries/live.json
     list: true
-    fields: *photo_fields
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: image
+        label: Image
+        type: image
+      - name: alt
+        label: Alt Text
+        type: string
 
   - name: black-and-white
     label: "Photos - Black & White"
     type: file
     path: data/galleries/black-and-white.json
     list: true
-    fields: *photo_fields
+    fields:
+      - name: title
+        label: Title
+        type: string
+      - name: image
+        label: Image
+        type: image
+      - name: alt
+        label: Alt Text
+        type: string
 
   # ---------------------------------------------------------------
   # PAGES
