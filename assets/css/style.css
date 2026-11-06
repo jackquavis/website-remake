@@ -167,6 +167,8 @@ body.inner-page {
 .home-header.visible .logo {
   left: 4rem;
   transform: translate(0, -50%);
+  font-size: 1rem;
+  letter-spacing: 3px;
 }
 
 .home-header #nav-menu, .home-header .header-controls {
