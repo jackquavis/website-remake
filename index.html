@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfolio | Jakub Chojnowski</title>
+  <title>Home | Jakub Chojnowski</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body data-root="" data-page="work">
+<body data-root="" data-page="home">
   
   <header id="site-header" class="home-header">
     <a href="./" class="logo">JAKUB CHOJNOWSKI</a>
@@ -61,11 +61,44 @@
     const gallerySection = document.getElementById('gallery-section');
 
     // Reveal Gallery Logic
-    revealBtn.addEventListener('click', () => {
+    function unlockHomeGallery() {
       siteHeader.classList.add('visible');
       gallerySection.classList.add('visible');
+      try { sessionStorage.setItem('homeUnlocked', '1'); } catch (e) {}
+    }
+
+    revealBtn.addEventListener('click', () => {
+      unlockHomeGallery();
       gallerySection.scrollIntoView({ behavior: 'smooth' });
     });
+
+    // Unlock automatically when arriving from another page on the site (or clicking Home/logo) or scrolling down
+    const params = new URLSearchParams(window.location.search);
+    const hasHomeHash = window.location.hash === '#home' || window.location.hash === '#unlocked';
+    const fromInternal = Boolean(document.referrer && (() => {
+      try { return new URL(document.referrer).origin === window.location.origin; } catch (e) { return true; }
+    })());
+    let wasUnlocked = false;
+    try { wasUnlocked = sessionStorage.getItem('homeUnlocked') === '1'; } catch (e) {}
+
+    if (params.has('unlocked') || hasHomeHash || fromInternal || wasUnlocked) {
+      unlockHomeGallery();
+      if (params.has('unlocked') || hasHomeHash) {
+        history.replaceState(null, '', window.location.pathname);
+        window.scrollTo(0, 0);
+      }
+    }
+
+    // Also unlock immediately if the user scrolls down with mouse wheel, trackpad, touch, or keyboard
+    const unlockOnScrollAttempt = (e) => {
+      if (gallerySection.classList.contains('visible')) return;
+      if (e.type === 'wheel' && e.deltaY <= 0) return;
+      if (e.type === 'keydown' && !['ArrowDown', 'PageDown', ' '].includes(e.key)) return;
+      unlockHomeGallery();
+    };
+    window.addEventListener('wheel', unlockOnScrollAttempt, { passive: true });
+    window.addEventListener('touchmove', unlockOnScrollAttempt, { passive: true });
+    window.addEventListener('keydown', unlockOnScrollAttempt);
 
     // Gallery & Lightbox Logic
     let galleryImages = []; let currentImageIndex = 0;

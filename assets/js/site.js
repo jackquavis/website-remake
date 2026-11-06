@@ -30,9 +30,13 @@
   function buildNav(site) {
     const nav = document.getElementById('nav-menu');
     if (!nav) return;
+    // Any non-home page visited during this session unlocks the home gallery for when the user returns
+    if (PAGE && PAGE !== 'home') {
+      try { sessionStorage.setItem('homeUnlocked', '1'); } catch (e) {}
+    }
     const galleries = (site.galleries || []).filter((g) => g.enabled);
     const cls = (name) => (PAGE === name ? ' class="active"' : '');
-    let html = `<a href="${ROOT || './'}?unlocked=1"${cls('home')}>Home</a>`;
+    let html = `<a href="${ROOT || './'}#home"${cls('home')}>Home</a>`;
 
     if (galleries.length) {
       const inGallery = PAGE.indexOf('gallery:') === 0;
