@@ -4,20 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About | Jakub Chojnowski</title>
-  <link rel="stylesheet" href="../assets/css/style.css"> <!-- Adjust path to style.css as needed -->
+  <link rel="stylesheet" href="../assets/css/style.css">
 </head>
-<body class="inner-page">
+<body class="inner-page" data-root="../" data-page="about">
 
-  <!-- Added .inner-header class -->
   <header id="site-header" class="inner-header">
     <a href="../" class="logo">JAKUB CHOJNOWSKI</a>
-    
-    <nav id="nav-menu">
-      <a href="../">Work</a>
-      <a href="./" class="active">About</a>
-      <a href="../booking/">Booking</a>
-    </nav>
-
+    <nav id="nav-menu"></nav>
     <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu">
       <span></span><span></span><span></span>
     </button>
@@ -25,21 +18,30 @@
 
   <main class="about-container">
     <div class="about-image-wrapper">
-      <img src="../assets/images/About_Me_Photo.jpg" alt="Jakub Chojnowski Portrait" class="about-image">
+      <img id="about-photo" src="../assets/images/About_Me_Photo.jpg" alt="Jakub Chojnowski Portrait" class="about-image">
+      <span class="frame-tag mono">Jakub Chojnowski</span>
     </div>
 
     <div class="about-text">
-      <h1 class="gradient-text">Authentic<br>Moments</h1>
-      <p>I am a portrait and editorial photographer dedicated to helping people feel confident and look their absolute best in front of the camera. My goal isn’t just to take a picture, it’s to capture an authentic snapshot in time that you’ll be proud to share.</p>
-      <p>My technical foundation was built through years of studying light, post-processing, and visual storytelling, eventually leading me to shoot editorial work for the Rutgers University Photography Club. It was there I discovered my true focus: people. I want my subjects to feel something real when they look at their images.</p>
-      <p>Whether we're shooting a creative editorial, a professional portrait, or a brand campaign, I believe in making the process effortless so your natural character shines through.</p>
-      <a href="../booking/" class="btn btn-outline">Book a Shoot</a>
+      <p class="eyebrow mono">About</p>
+      <h1 id="about-heading" class="gradient-text">Authentic<br>Moments</h1>
+      <div id="about-body">
+        <p>I am a portrait and editorial photographer dedicated to helping people feel confident and look their absolute best in front of the camera. My goal isn’t just to take a picture, it’s to capture an authentic snapshot in time that you’ll be proud to share.</p>
+        <p>My technical foundation was built through years of studying light, post-processing, and visual storytelling, eventually leading me to shoot editorial work for the Rutgers University Photography Club. It was there I discovered my true focus: people. I want my subjects to feel something real when they look at their images.</p>
+        <p>Whether we're shooting a creative editorial, a professional portrait, or a brand campaign, I believe in making the process effortless so your natural character shines through.</p>
+      </div>
+      <a href="../booking/" id="about-cta" class="btn btn-outline">Book a Shoot</a>
     </div>
   </main>
 
+  <section class="process" id="about-process" hidden>
+    <h2 id="process-title"></h2>
+    <div class="process-steps" id="process-steps"></div>
+  </section>
+
   <footer>
-    <a href="https://instagram.com/jackquoob" class="social-icon" target="_blank" aria-label="Instagram">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <a href="https://instagram.com/jackquoob" class="social-icon" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
         <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
         <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
@@ -48,14 +50,24 @@
     <p>© 2026 Jakub Chojnowski</p>
   </footer>
 
+  <script src="../assets/js/site.js"></script>
   <script>
-    // Unified Mobile Menu Toggle
-    const hamburgerBtn = document.getElementById('hamburger-btn');
-    const navMenu = document.getElementById('nav-menu');
-    hamburgerBtn.addEventListener('click', () => {
-      hamburgerBtn.classList.toggle('active');
-      navMenu.classList.toggle('active');
-    });
+    // Content comes from data/about.json (editable in Pages CMS); the HTML above is the fallback.
+    Site.getJSON('data/about.json').then(d => {
+      const { esc } = Site;
+      if (d.heading) document.getElementById('about-heading').innerHTML = esc(d.heading).replace(/\n/g, '<br>');
+      if (d.photo) document.getElementById('about-photo').src = Site.url(d.photo);
+      if (d.photo_alt) document.getElementById('about-photo').alt = d.photo_alt;
+      if (d.paragraphs && d.paragraphs.length)
+        document.getElementById('about-body').innerHTML = d.paragraphs.map(p => `<p>${esc(p)}</p>`).join('');
+      if (d.cta_label) document.getElementById('about-cta').textContent = d.cta_label;
+      if (d.process && d.process.length) {
+        document.getElementById('process-title').textContent = d.process_title || '';
+        document.getElementById('process-steps').innerHTML = d.process.map((s, i) =>
+          `<div class="process-step"><span class="mono">${String(i + 1).padStart(2, '0')}</span><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p></div>`).join('');
+        document.getElementById('about-process').hidden = false;
+      }
+    }).catch(() => {});
   </script>
 </body>
 </html>

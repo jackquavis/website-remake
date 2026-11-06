@@ -16,6 +16,8 @@
   padding: 0;
 }
 
+html { scroll-behavior: smooth; }
+
 body {
   background: var(--bg-color);
   color: var(--text-color);
@@ -247,7 +249,7 @@ body.inner-page {
 
 .gallery-section { display: none; padding: 8rem 4rem 4rem 4rem; max-width: 1600px; margin: 0 auto; width: 100%; }
 .gallery-section.visible { display: block; }
-.gallery { column-count: 2; column-gap: 1.5rem; }
+.gallery { column-count: 3; column-gap: 1.5rem; }
 .gallery img {
   width: 100%; height: auto; display: block; margin-bottom: 1.5rem;
   border-radius: 4px; cursor: pointer; 
@@ -305,19 +307,270 @@ body.inner-page {
 .status-msg.active { display: block; animation: fadeUp 0.4s ease-out; }
 
 /* ==========================================================================
-   PAGE: LINKS
+   PAGE: LINKS - Photography-inspired layout
    ========================================================================== */
+
+/* Monospace font utility */
+.mono { font-family: 'Space Mono', 'Courier New', monospace; }
+
+/* ---- Mosaic background ---- */
 body.links-page {
-  background: linear-gradient(-45deg, #0a0f1d, #1c2b59, #231236, #0a1128);
-  background-size: 400% 400%; animation: fluidGradient 12s ease infinite;
-  justify-content: center; align-items: center; padding: 2rem 1.5rem; text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: #000;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  min-height: 100vh;
 }
-@keyframes fluidGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-.links-page .logo { position: absolute; top: 2.5rem; left: 0; width: 100%; text-align: center; font-size: 1.3rem; letter-spacing: 6px; }
-.links-wrapper { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 2rem; margin-top: 3rem; }
-.links-wrapper h1 { font-size: 3rem; font-weight: 800; line-height: 1.1; letter-spacing: -1px; margin-bottom: 0.5rem; }
-.links-wrapper p { font-size: 1rem; color: #ccc; margin-bottom: 2rem; }
-.links-wrapper .button-group { display: flex; flex-direction: column; gap: 1rem; }
+
+.links-bg-mosaic {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  gap: 6px;
+  pointer-events: none;
+  z-index: 0;
+  width: 110vw;
+  left: -5vw;
+}
+
+.mosaic-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  will-change: transform;
+  transform: translateY(0);
+}
+
+.mosaic-col--offset {
+  transform: translateY(-60px);
+}
+
+.mosaic-col img {
+  width: 100%;
+  flex: 1;
+  object-fit: cover;
+  display: block;
+  min-height: 0;
+  height: 25%;
+  filter: grayscale(20%) contrast(105%);
+}
+
+/* ---- Dark gradient overlay ---- */
+.links-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.0) 100%),
+    linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.75) 100%);
+  pointer-events: none;
+}
+
+/* ---- Viewfinder corner brackets ---- */
+.vf-corner {
+  position: fixed;
+  z-index: 3;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  opacity: 0.55;
+}
+.vf-tl { top: 20px; left: 20px; border-top: 1.5px solid #fff; border-left: 1.5px solid #fff; }
+.vf-tr { top: 20px; right: 20px; border-top: 1.5px solid #fff; border-right: 1.5px solid #fff; }
+.vf-bl { bottom: 20px; left: 20px; border-bottom: 1.5px solid #fff; border-left: 1.5px solid #fff; }
+.vf-br { bottom: 20px; right: 20px; border-bottom: 1.5px solid #fff; border-right: 1.5px solid #fff; }
+
+/* ---- Camera HUD metadata ---- */
+.links-hud {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  z-index: 3;
+  pointer-events: none;
+  font-family: 'Space Mono', 'Courier New', monospace;
+}
+.links-hud--top { top: 22px; }
+.links-hud--bottom { bottom: 22px; }
+.hud-sep { opacity: 0.3; }
+.hud-rec {
+  color: #e34343;
+  font-size: 0.55rem;
+  animation: recBlink 1.6s ease-in-out infinite;
+}
+@keyframes recBlink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+/* ---- Main content ---- */
+.links-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6rem;
+  width: 100%;
+  max-width: 480px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ---- Logo row ---- */
+.links-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+.links-logo-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.25);
+}
+.links-logo-text {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 5px;
+  white-space: nowrap;
+  color: #fff;
+}
+
+/* ---- Tagline ---- */
+.links-tagline {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-family: 'Space Mono', 'Courier New', monospace;
+}
+
+/* ---- Link cards ---- */
+.links-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.link-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-decoration: none;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  padding: 1.1rem 1.4rem;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: rgba(10,10,10,0.55);
+  overflow: hidden;
+  transition: border-color 0.35s ease, background 0.35s ease, transform 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+
+.link-card:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.45);
+  transform: translateY(-3px) scale(1.012);
+}
+
+.link-card--primary {
+  background: rgba(255,255,255,0.92);
+  color: #000;
+  border-color: transparent;
+}
+.link-card--primary .link-card-sub { color: #555; }
+.link-card--primary:hover {
+  background: #fff;
+  transform: translateY(-3px) scale(1.012);
+}
+
+.link-card-inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.link-card-icon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  opacity: 0.85;
+}
+.link-card-icon svg { width: 100%; height: 100%; }
+
+.link-card-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+}
+
+.link-card-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.link-card-sub {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 1px;
+  font-family: 'Space Mono', 'Courier New', monospace;
+}
+
+/* Shutter-blade decoration on primary card hover */
+.link-card-shutter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+.link-card--primary:hover .link-card-shutter { opacity: 1; }
+.link-card-shutter span {
+  position: absolute;
+  width: 70%;
+  height: 1px;
+  background: rgba(0,0,0,0.06);
+  transform-origin: center;
+}
+.link-card-shutter span:nth-child(1) { transform: rotate(0deg); }
+.link-card-shutter span:nth-child(2) { transform: rotate(30deg); }
+.link-card-shutter span:nth-child(3) { transform: rotate(60deg); }
+.link-card-shutter span:nth-child(4) { transform: rotate(90deg); }
+.link-card-shutter span:nth-child(5) { transform: rotate(120deg); }
+.link-card-shutter span:nth-child(6) { transform: rotate(150deg); }
+
+/* ---- Footer text ---- */
+.links-footer-text {
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+  font-family: 'Space Mono', 'Courier New', monospace;
+}
+
+/* Legacy wrapper - hidden */
+.links-wrapper { display: none; }
 
 /* ==========================================================================
    LIGHTBOX & FOOTER
@@ -353,6 +606,8 @@ footer p { margin-top: 1.5rem; font-size: 0.75rem; color: #555; letter-spacing: 
   .about-text h1, .contact-info h1 { font-size: 3rem; }
   .hero { padding: 4rem 2rem; }
   .gallery-section { padding: 6rem 2rem 2rem 2rem; }
+  .gallery { column-count: 2; }
+  /* Links page responsive */
 }
 
 @media (max-width: 900px) {
@@ -427,7 +682,220 @@ footer p { margin-top: 1.5rem; font-size: 0.75rem; color: #555; letter-spacing: 
   .home-header.visible #nav-menu.active { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); }
 
   .gallery { column-count: 1; }
+  /* Links page mobile */
+  .links-bg-mosaic { gap: 4px; }
+  .vf-corner { width: 24px; height: 24px; }
   .hero { padding: 2rem; }
   .hero-title, .about-text h1, .contact-info h1 { font-size: 2.5rem; }
   .hero-cta { flex-direction: column; width: 100%; }
 }
+
+/* ==========================================================================
+   SHARED NAV: GALLERIES DROPDOWN
+   Desktop: a strip that extends the navbar itself (same glass, full width).
+   Mobile: an inline accordion inside the full-screen menu.
+   ========================================================================== */
+#nav-menu { align-items: center; }
+.nav-back { display: none; }
+.nav-dropdown { display: flex; align-items: center; height: 80px; } /* not positioned: the strip anchors to the header */
+.nav-dropdown-trigger {
+  background: none; border: none; padding: 0; cursor: pointer; font-family: inherit;
+  color: #777; text-transform: uppercase; font-size: 0.8rem; font-weight: 600; letter-spacing: 2px;
+  display: inline-flex; align-items: center; gap: 0.5rem; transition: color 0.3s ease;
+}
+.nav-dropdown-trigger .caret {
+  width: 5px; height: 5px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg) translateY(-2px); transition: transform 0.25s ease;
+}
+.nav-dropdown:hover .nav-dropdown-trigger, .nav-dropdown.open .nav-dropdown-trigger,
+.nav-dropdown.has-active .nav-dropdown-trigger, .nav-dropdown:has(:focus-visible) .nav-dropdown-trigger { color: #fff; }
+.nav-dropdown:hover .caret, .nav-dropdown.open .caret { transform: rotate(225deg) translateY(2px); }
+
+/* The strip: one element, one fade, so background and links always disappear together */
+.nav-dropdown-menu {
+  position: absolute; top: 100%; left: 0; width: 100%;
+  background: rgba(5,5,5,0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+}
+.nav-dropdown:hover .nav-dropdown-menu, .nav-dropdown.open .nav-dropdown-menu, .nav-dropdown:has(:focus-visible) .nav-dropdown-menu {
+  opacity: 1; visibility: visible; pointer-events: auto; transition: opacity 0.2s ease, visibility 0s;
+}
+.nav-dropdown-panel { display: flex; justify-content: flex-end; gap: 2.5rem; padding: 1.5rem 4rem 1.7rem; }
+.nav-dropdown-panel a::after { display: none !important; }
+/* merge the header's bottom border into the strip while it is open */
+.inner-header:has(.nav-dropdown:hover), .inner-header:has(.nav-dropdown.open),
+.home-header:has(.nav-dropdown:hover), .home-header:has(.nav-dropdown.open) { border-bottom-color: transparent; }
+
+/* ==========================================================================
+   SHARED: EYEBROWS / FRAME TAGS
+   ========================================================================== */
+.eyebrow { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: #777; margin-bottom: 1.2rem; }
+.frame-tag {
+  position: absolute; left: 1rem; bottom: 1rem; font-size: 0.65rem; letter-spacing: 2px;
+  text-transform: uppercase; color: rgba(255,255,255,0.75); text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+}
+
+/* ==========================================================================
+   GALLERY PAGES
+   ========================================================================== */
+.page-hero { max-width: 1600px; margin: 0 auto; width: 100%; padding: 5rem 4rem 0; animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.page-hero h1 { font-size: clamp(2.8rem, 7vw, 6rem); font-weight: 800; line-height: 1.05; letter-spacing: -2px; text-transform: uppercase; margin-bottom: 1.2rem; }
+.page-hero p#gallery-intro { color: #999; font-size: 1.1rem; line-height: 1.6; max-width: 560px; }
+.page-hero .eyebrow span { color: #444; margin-left: 0.8rem; }
+.gallery-page .gallery-section { padding-top: 3rem; flex: 1; }
+.gallery-empty { text-align: center; padding: 6rem 2rem; color: #777; font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase;
+  border: 1px dashed rgba(255,255,255,0.15); border-radius: 6px; font-family: 'Space Mono', 'Courier New', monospace; }
+.gallery-empty[hidden], .gallery-more[hidden], .process[hidden], .shoot-types[hidden] { display: none; }
+.gallery-more { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.08); }
+.gallery-more .mono { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: #666; margin-right: 0.8rem; font-family: 'Space Mono', 'Courier New', monospace; }
+.pill { color: #ccc; text-decoration: none; font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+  padding: 0.7rem 1.3rem; border: 1px solid rgba(255,255,255,0.2); border-radius: 100px; transition: all 0.3s ease; }
+.pill:hover { background: #fff; color: #000; border-color: #fff; }
+
+/* ==========================================================================
+   ABOUT (extras)
+   ========================================================================== */
+.about-text .btn { margin-top: 1rem; }
+.process { max-width: 1200px; margin: 0 auto; width: 100%; padding: 2rem 3rem 6rem; }
+.process h2 { font-size: 0.75rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #777; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.process-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2.5rem; }
+.process-step .mono { font-family: 'Space Mono', 'Courier New', monospace; font-size: 0.75rem; color: #666; letter-spacing: 2px; }
+.process-step h3 { font-size: 1.4rem; font-weight: 800; text-transform: uppercase; letter-spacing: -0.5px; margin: 0.6rem 0; }
+.process-step p { color: #999; line-height: 1.7; }
+
+/* ==========================================================================
+   BOOKING (extras)
+   ========================================================================== */
+.shoot-types { margin-top: 2.5rem; max-width: 440px; }
+.shoot-types-title { font-family: 'Space Mono', 'Courier New', monospace; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: #777; margin-bottom: 1rem !important; }
+#shoot-types { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.shoot-type {
+  display: flex; flex-direction: column; gap: 0.3rem; text-align: left; cursor: pointer; font-family: inherit; color: #fff;
+  padding: 1rem 1.1rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.12); border-radius: 6px;
+  transition: all 0.3s ease;
+}
+.shoot-type:hover { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05); transform: translateY(-2px); }
+.shoot-type.selected { background: #fff; color: #000; border-color: #fff; }
+.shoot-type-name { font-size: 0.8rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+.shoot-type-desc { font-size: 0.75rem; color: #888; line-height: 1.4; }
+.shoot-type.selected .shoot-type-desc { color: #444; }
+
+/* ==========================================================================
+   LINKS PAGE: palette variables (set from data/links.json)
+   ========================================================================== */
+body.links-page {
+  --lp-text: #ffffff; --lp-card: 10,10,10; --lp-primary-bg: #ffffff; --lp-primary-text: #000000;
+  --lp-accent: #e34343; --lp-tint: 0,0,0;
+  color: var(--lp-text); overflow-x: hidden; overflow-y: auto; padding: 4rem 0;
+}
+.links-overlay {
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(var(--lp-tint),0.65) 0%, rgba(var(--lp-tint),0) 100%),
+    linear-gradient(to bottom, rgba(var(--lp-tint),0.7) 0%, rgba(var(--lp-tint),0.3) 40%, rgba(var(--lp-tint),0.3) 60%, rgba(var(--lp-tint),0.75) 100%);
+}
+.links-page .vf-corner { border-color: var(--lp-accent); }
+.links-page .links-logo-line { background: var(--lp-accent); opacity: 0.5; }
+.links-page .links-logo-text, .links-page .links-tagline, .links-page .links-hud, .links-page .links-footer-text { color: var(--lp-text); }
+.links-page .links-tagline, .links-page .links-hud { opacity: 0.6; }
+.links-page .links-footer-text { opacity: 0.35; }
+.links-page .hud-rec { color: var(--lp-accent); }
+.links-page .link-card { color: var(--lp-text); background: rgba(var(--lp-card), 0.55); }
+.links-page .link-card:hover { background: rgba(var(--lp-card), 0.85); border-color: var(--lp-accent); }
+.links-page .link-card-sub { color: inherit; opacity: 0.6; }
+.links-page .link-card--primary { background: var(--lp-primary-bg); color: var(--lp-primary-text); border-color: transparent; }
+.links-page .link-card--primary:hover { background: var(--lp-primary-bg); filter: brightness(1.1); border-color: transparent; }
+
+/* ==========================================================================
+   RESPONSIVE (new components)
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .page-hero { padding: 4rem 2rem 0; }
+}
+@media (max-width: 768px) {
+  .page-hero { padding: 3rem 1.5rem 0; }
+  .process { padding: 1rem 2rem 4rem; }
+  #shoot-types { grid-template-columns: 1fr; }
+  .nav-dropdown { flex-direction: column; height: auto; gap: 0; }
+  .nav-dropdown-trigger { pointer-events: auto; font-size: 1.2rem; color: #777; padding: 0.2rem 0; }
+  .nav-dropdown-trigger .caret { transform: rotate(-45deg); }
+  /* Drill-in: tapping "Galleries" swaps the menu for the gallery list (with a Back button) */
+  .nav-dropdown-menu, .nav-dropdown:hover .nav-dropdown-menu, .nav-dropdown.open .nav-dropdown-menu, .nav-dropdown:has(:focus-visible) .nav-dropdown-menu {
+    display: none; position: static; width: auto; background: none; border: none;
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    opacity: 1; visibility: visible; pointer-events: auto; transition: none;
+  }
+  #nav-menu.show-galleries > a, #nav-menu.show-galleries .nav-dropdown-trigger { display: none; }
+  #nav-menu.show-galleries .nav-dropdown-menu { display: block; }
+  .nav-dropdown-panel { flex-direction: column; align-items: center; justify-content: flex-start; gap: 1.8rem; padding: 0; animation: fadeUp 0.35s ease both; }
+  .nav-dropdown-panel a { font-size: 1.3rem !important; color: #999; }
+  .nav-dropdown-panel a.active { color: #fff; }
+  .nav-back {
+    display: inline-flex; background: none; border: none; cursor: pointer; font-family: 'Space Mono', 'Courier New', monospace;
+    color: #777; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; padding: 0.5rem 1rem; margin-bottom: 0.8rem;
+    transition: color 0.3s ease;
+  }
+  .nav-back:hover { color: #fff; }
+  #nav-menu { gap: 1.8rem; }
+}
+
+/* ==========================================================================
+   DESKTOP HEADER: move the blur onto a pseudo-element so the dropdown strip
+   (a child of the header) can blur the page too. Nested backdrop-filters
+   don't work, so the header itself must not have one.
+   ========================================================================== */
+@media (min-width: 769px) {
+  .inner-header, .home-header.visible {
+    background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; border-bottom: none;
+  }
+  .inner-header::before, .home-header::before {
+    content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background: rgba(5,5,5,0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: opacity 0.8s ease, border-color 0.2s ease;
+  }
+  .home-header::before { opacity: 0; }
+  .home-header.visible::before { opacity: 1; }
+  /* the bar and the strip read as one piece while the strip is open */
+  .inner-header:has(.nav-dropdown:hover)::before, .inner-header:has(.nav-dropdown.open)::before,
+  .home-header:has(.nav-dropdown:hover)::before, .home-header:has(.nav-dropdown.open)::before { border-bottom-color: transparent; }
+  .nav-dropdown-menu { border-top: none; }
+}
+
+/* Seamless strip: the header's own blurred layer grows to cover the strip (one surface = no seam) */
+@media (min-width: 769px) {
+  .inner-header::before, .home-header::before { height: 100%; bottom: auto; transition: opacity 0.8s ease, height 0.2s ease; }
+  .nav-dropdown-menu { background: none; backdrop-filter: none; -webkit-backdrop-filter: none; border: none; }
+  .nav-dropdown-panel { height: 64px; padding: 0 4rem; align-items: center; }
+  .inner-header:has(.nav-dropdown:hover)::before, .inner-header:has(.nav-dropdown.open)::before, .inner-header:has(.nav-dropdown-trigger:focus-visible)::before,
+  .home-header:has(.nav-dropdown:hover)::before, .home-header:has(.nav-dropdown.open)::before, .home-header:has(.nav-dropdown-trigger:focus-visible)::before {
+    height: calc(100% + 64px); border-bottom-color: rgba(255,255,255,0.05);
+  }
+}
+@media (min-width: 769px) and (max-width: 1024px) { .nav-dropdown-panel { padding: 0 3rem; } }
+
+/* ==========================================================================
+   INNER PAGE BACKGROUND: flat black + film grain + rule-of-thirds guides
+   (replaces the old corner gradient)
+   ========================================================================== */
+body.inner-page { background: #070707; }
+body.inner-page::before, body.inner-page::after { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: -1; }
+/* film grain */
+body.inner-page::before {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  inset: -10%; opacity: 0.07; animation: grainShift 0.8s steps(4) infinite;
+}
+/* rule-of-thirds guides, like a camera viewfinder grid */
+body.inner-page::after {
+  background:
+    linear-gradient(to right, transparent calc(33.333% - 0.5px), rgba(255,255,255,0.045) calc(33.333% - 0.5px), rgba(255,255,255,0.045) calc(33.333% + 0.5px), transparent calc(33.333% + 0.5px)),
+    linear-gradient(to right, transparent calc(66.666% - 0.5px), rgba(255,255,255,0.045) calc(66.666% - 0.5px), rgba(255,255,255,0.045) calc(66.666% + 0.5px), transparent calc(66.666% + 0.5px)),
+    linear-gradient(to bottom, transparent calc(33.333% - 0.5px), rgba(255,255,255,0.045) calc(33.333% - 0.5px), rgba(255,255,255,0.045) calc(33.333% + 0.5px), transparent calc(33.333% + 0.5px)),
+    linear-gradient(to bottom, transparent calc(66.666% - 0.5px), rgba(255,255,255,0.045) calc(66.666% - 0.5px), rgba(255,255,255,0.045) calc(66.666% + 0.5px), transparent calc(66.666% + 0.5px));
+}
+@keyframes grainShift {
+  0% { transform: translate(0, 0); } 25% { transform: translate(-3%, 2%); }
+  50% { transform: translate(2%, -3%); } 75% { transform: translate(-2%, -1%); } 100% { transform: translate(0, 0); }
+}
+@media (prefers-reduced-motion: reduce) { body.inner-page::before { animation: none; } }
