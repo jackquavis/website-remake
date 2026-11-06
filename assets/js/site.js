@@ -32,7 +32,7 @@
     if (!nav) return;
     const galleries = (site.galleries || []).filter((g) => g.enabled);
     const cls = (name) => (PAGE === name ? ' class="active"' : '');
-    let html = `<a href="${ROOT || './'}"${cls('work')}>Portfolio</a>`;
+    let html = `<a href="${ROOT || './'}?unlocked=1"${cls('home')}>Home</a>`;
 
     if (galleries.length) {
       const inGallery = PAGE.indexOf('gallery:') === 0;
